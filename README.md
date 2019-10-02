@@ -1,5 +1,6 @@
 # Batatas
-open-cx-batatas created by GitHub Classroom
+
+
 ## Vision
 ### Values
 User satisfaction is our main concern. To achieve this we will provide a service to our users so that they will never be lost no matter the situation. Building a responsive app is also one of our main pillars because without this value none of the others can exist. Finally our last underlying value is to use the newest cutting edge technology to provide a better navigation service.
