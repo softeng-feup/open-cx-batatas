@@ -1,4 +1,4 @@
-# open-cx-batatas
+# Batatas
 open-cx-batatas created by GitHub Classroom
 ## Vision
 ### Values
