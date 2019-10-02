@@ -1,9 +1,10 @@
 # open-cx-batatas
 open-cx-batatas created by GitHub Classroom
 ## Vision
-### Our Values
-### Our Mission
-### Our Motto
+### Values
+Our user satisfaction is our main concern. To achieve this we will provide a service to our users so that they will never be lost no matter the situation. Building a responsive app is also one of our main pillars, because without this value none of the others can exist. Finally our last underlying value is to use newest cutting edge technology to provide a better navigation service
+### Mission
+### Motto
 ## Elevator Pitch
 "Hey! So, after this talk there is going to be a workshop on room 212, don't forget to check it out!". But the problem is that the attendees aren't FEUP students, and they don't have directions to the workshop. Our app fixes that.
 
