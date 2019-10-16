@@ -9,9 +9,6 @@ from core.models import Location
 def hello(request):
     template = loader.get_template('frontend_example/index.html')
 
-    if request.user.is_staff:
-        # logic
-
     locations = Location.objects.all()
 
     context = {
