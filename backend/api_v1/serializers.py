@@ -4,6 +4,7 @@ from core.models import Tag
 from core.models import Event
 from core.models import Notification
 from core.models import Room
+from core.models import Beacon
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,3 +29,8 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['name']
+
+class BeaconSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Beacon
+        fields = ['id']

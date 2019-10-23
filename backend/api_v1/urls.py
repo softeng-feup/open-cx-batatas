@@ -8,4 +8,5 @@ urlpatterns = [
     path('events/', views.EventList.as_view()),
     path('notifications/', views.NotificationList.as_view()),
     path('rooms/', views.RoomList.as_view()),
+    path('Beacon/', views.BeaconList.as_view()),
 ]
