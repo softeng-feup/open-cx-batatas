@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: "Marauder's Mapp",
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Map Page'),
     );
   }
 }
@@ -70,6 +70,23 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1, // this will be set when a new tab is tapped
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.person),
+            title: new Text('Profile'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.map),
+            title: new Text('Map'),
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              title: Text('Events')
+          )
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
