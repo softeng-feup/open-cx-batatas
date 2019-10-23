@@ -29,13 +29,19 @@ class Tag(models.Model):
 
 class Beacon(models.Model):
     isActive = models.BooleanField()
+    def __str__(self):
+        return '[{},{}]'.format(self.id,self.isActive)
 
 class Notification(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
+    def __str__(self):
+        return '{}'.format(self.name)
 
 #class User(models.User):
 #    isPrivate =  models.BooleanField()
 
 class Room(models.Model):
     name = models.CharField(max_length=30)
+    def __str__(self):
+        return '{}'.format(self.name)

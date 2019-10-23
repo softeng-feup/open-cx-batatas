@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, mixins
-from .serializers import LocationSerializer,TagSerializer,EventSerializer
-from core.models import Location,Tag,Event
+from .serializers import LocationSerializer,TagSerializer,EventSerializer,NotificationSerializer,RoomSerializer
+from core.models import Location,Tag,Notification,Room,Event
 # Create your views here.
 
 class LocationList(mixins.ListModelMixin,
@@ -53,5 +53,33 @@ class EventList(mixins.ListModelMixin,
         Handler for GET requests.
 
         Lists all the events.
+        """
+        return self.list(request, *args, **kwargs)
+
+class NotificationList(mixins.ListModelMixin,
+                   generics.GenericAPIView):
+
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handler for GET requests.
+
+        Lists all the notifications.
+        """
+        return self.list(request, *args, **kwargs)
+
+class RoomList(mixins.ListModelMixin,
+                   generics.GenericAPIView):
+
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handler for GET requests.
+
+        Lists all the rooms.
         """
         return self.list(request, *args, **kwargs)
