@@ -116,3 +116,6 @@ dmypy.json
 .pyre/
 
 env/
+
+#cenas de vscode
+.vscode
