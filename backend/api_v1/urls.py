@@ -4,4 +4,5 @@ from . import views
 
 urlpatterns = [
     path('locations/', views.LocationList.as_view()),
+    path('tags/', views.TagList.as_view()),
 ]

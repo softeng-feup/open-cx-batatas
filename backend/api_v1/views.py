@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, mixins
-from .serializers import LocationSerializer
-from core.models import Location
-
+from .serializers import LocationSerializer,TagSerializer
+from core.models import Location,Tag
 # Create your views here.
 
 class LocationList(mixins.ListModelMixin,
@@ -27,3 +26,18 @@ class LocationList(mixins.ListModelMixin,
         Creates a new location.
         """
         return self.create(request, *args, **kwargs)
+
+
+class TagList(mixins.ListModelMixin,
+                   generics.GenericAPIView):
+
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handler for GET requests.
+
+        Lists all the locations.
+        """
+        return self.list(request, *args, **kwargs)
