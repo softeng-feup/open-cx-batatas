@@ -19,3 +19,19 @@ class Event(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     updates = models.TextField(null=True, blank=True, default=None)
+
+class Tag(models.Model):
+    name = models.CharField(max_length=30)
+
+class Beacon(models.Model):
+    isActive = models.BooleanField()
+
+class Notification(models.Model):
+    name = models.CharField(max_length=30)
+    description = models.TextField()
+
+#class User(models.User):
+#    isPrivate =  models.BooleanField()
+
+class Room(models.Model):
+    name = models.CharField(max_length=30)
