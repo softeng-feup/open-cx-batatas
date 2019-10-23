@@ -19,6 +19,8 @@ class Event(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     updates = models.TextField(null=True, blank=True, default=None)
+    def __str__(self):
+        return '{}'.format(self.name)
 
 class Tag(models.Model):
     name = models.CharField(max_length=30)
