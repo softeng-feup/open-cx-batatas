@@ -6,4 +6,5 @@ urlpatterns = [
     path('locations/', views.LocationList.as_view()),
     path('tags/', views.TagList.as_view()),
     path('notifications/', views.NotificationList.as_view()),
+    path('rooms/', views.RoomList.as_view()),
 ]
