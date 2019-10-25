@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'profilePage.dart';
 import 'mapPage.dart';
 import 'eventsPage.dart';
+import 'package:flutter/'
 
 void main() => runApp(MyApp());
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Map Page'),
+      home: MyHomePage(title: "Marauder's Mapp"),
     );
   }
 }
@@ -49,9 +50,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 1;
   final List<Widget> _children = [
-    ProfilePage(Colors.blue),
-    MapPage(Colors.deepOrange),
-    EventsPage(Colors.green)
+    ProfilePage(),
+    MapPage(),
+    EventsPage()
   ];
 
   @override
