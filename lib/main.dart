@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'profilePage.dart';
 import 'mapPage.dart';
 import 'eventsPage.dart';
-import 'package:flutter/'
 
 void main() => runApp(MyApp());
 
