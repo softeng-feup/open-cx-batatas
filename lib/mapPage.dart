@@ -20,20 +20,20 @@ class MapController extends State<MapPage> {
   @override
   Widget build(BuildContext context) { //"draw" method
     return Container(
-      child: Transform.scale(
-        scale: 8,
-        child: MatrixGestureDetector(
-          onMatrixUpdate: (Matrix4 m, Matrix4 tm, Matrix4 sm, Matrix4 rm) {
-            setState(() {
-              _matrix = m;
-            });
-          },
-          child: Transform(
-            transform: _matrix,
-            child: Image(image: _map)
-          )
+      alignment: Alignment.center,
+        child: SizedBox.expand(
+            child: MatrixGestureDetector(
+                onMatrixUpdate: (Matrix4 m, Matrix4 tm, Matrix4 sm, Matrix4 rm) {
+                  setState(() {
+                    _matrix = m;
+                  });
+                },
+                child: Transform(
+                    transform: _matrix,
+                    child: Image(image: _map)
+                )
+            )
         )
-      )
     );
   }
 
