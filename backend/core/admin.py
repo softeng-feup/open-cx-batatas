@@ -1,3 +1,6 @@
+"""
+Admin registrations.
+"""
 from django.contrib import admin
 from .models import Event, Location, Tag, Beacon, Notification, Room
 

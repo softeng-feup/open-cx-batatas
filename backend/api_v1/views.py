@@ -1,13 +1,20 @@
-from django.shortcuts import render
+"""
+Views for api_v1.
+"""
 from rest_framework import generics, mixins
-from .serializers import LocationSerializer,TagSerializer,EventSerializer,NotificationSerializer,RoomSerializer, BeaconSerializer
-from core.models import Location,Tag,Notification,Room,Event, Beacon
-# Create your views here.
+from core.models import Location, Tag,\
+                        Notification, Room,\
+                        Event, Beacon
+from .serializers import LocationSerializer, TagSerializer,\
+                         EventSerializer, NotificationSerializer,\
+                         RoomSerializer, BeaconSerializer
 
 class LocationList(mixins.ListModelMixin,
                    mixins.CreateModelMixin,
                    generics.GenericAPIView):
-
+    """
+    Lists all locations.
+    """
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
 
@@ -29,8 +36,10 @@ class LocationList(mixins.ListModelMixin,
 
 
 class TagList(mixins.ListModelMixin,
-                   generics.GenericAPIView):
-
+              generics.GenericAPIView):
+    """
+    Lists all tags.
+    """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
@@ -43,8 +52,10 @@ class TagList(mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 class EventList(mixins.ListModelMixin,
-                   generics.GenericAPIView):
-
+                generics.GenericAPIView):
+    """
+    Lists all events.
+    """
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -57,8 +68,10 @@ class EventList(mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 class NotificationList(mixins.ListModelMixin,
-                   generics.GenericAPIView):
-
+                       generics.GenericAPIView):
+    """
+    Lists all notifications.
+    """
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
 
@@ -71,8 +84,10 @@ class NotificationList(mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 class RoomList(mixins.ListModelMixin,
-                   generics.GenericAPIView):
-
+               generics.GenericAPIView):
+    """
+    Lists all rooms.
+    """
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
@@ -85,8 +100,10 @@ class RoomList(mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 class BeaconList(mixins.ListModelMixin,
-                   generics.GenericAPIView):
-
+                 generics.GenericAPIView):
+    """
+    Lists all beacons.
+    """
     queryset = Beacon.objects.all()
     serializer_class = BeaconSerializer
 

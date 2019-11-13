@@ -1,5 +1,7 @@
-from django.contrib import admin
-from django.urls import path, include
+"""
+URLs for api_v1.
+"""
+from django.urls import path
 from . import views
 
 urlpatterns = [
