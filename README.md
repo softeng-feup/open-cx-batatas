@@ -28,7 +28,7 @@ Use this link to view the Mockup (bottom bar navigation is functional): https://
 For our architecture, we opted for a basic relational schema made up of three different components: backend, mobile app and BLE playground. The mobile app will be how users interact with us, which will be responsible for fetching the backend for updating information, and for scanning the nearby Bluetooth beacons to be able to localize itself.
 
 #### Technology
-For our technology, we decided to go with Django as our backend framework, and Flutter as our mobile app framework.
+For our technology, we decided to go with Django as our backend framework, and with Flutter as our mobile app framework.
 
 #### Why Django?
 Django is a MVC python web framework built _for perfectionists with deadlines_, as the motto says. At its core, this framework implements the DRY (don't repeat yourself) software principle to the maximum extent, as everything in Django is from it's models. Because of this, it has a simplistic architecture and it's a great candidate for ESOF because of its short learning curve.
