@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'profilePage.dart';
 import 'mapPage.dart';
 import 'eventsPage.dart';
@@ -18,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:loading/loading.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'screens/LoadingScreen.dart';
+import 'allEventsPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -67,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _children = [
     MapPage(),
     EventsPage(),
+    AllEventsPage(),
     ProfilePage(),
   ];
 
@@ -123,8 +126,20 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title, style: TextStyle(fontFamily: 'Fontin Sans')),
       ),
       body: _children[_currentIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: Icon(Icons.navigation),
+        backgroundColor: Colors.green,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
+        type: BottomNavigationBarType
+            .fixed, // isto foi a correção: https://github.com/flutter/flutter/issues/13642
+        selectedItemColor: new Color.fromRGBO(0, 0, 0, 1.0),
+        unselectedItemColor: new Color.fromRGBO(0, 0, 0, 0.3),
+        backgroundColor: new Color.fromRGBO(255, 255, 255, 1.0),
         currentIndex:
             _currentIndex, // this will be set when a new tab is tapped
         items: [
@@ -137,6 +152,12 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: new Icon(Icons.person),
             title: new Text('Profile'),
+            icon: new Icon(Icons.calendar_today),
+            title: new Text('Events'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.add_circle),
+            title: new Text('Hey'),
           ),
         ],
       ),
