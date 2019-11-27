@@ -49,8 +49,23 @@ class AllEventsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //"draw" method
-    return Container(
-      child: _buildList(),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.directions_car)),
+              Tab(icon: Icon(Icons.directions_transit)),
+              Tab(icon: Icon(Icons.directions_bike)),
+            ],
+          ),
+          title: Text('All events'),
+        ),
+        body: TabBarView(
+          children: [_buildList(), _buildList(), _buildList()],
+        ),
+      ),
     );
   }
 }
