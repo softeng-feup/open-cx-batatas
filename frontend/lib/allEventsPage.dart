@@ -50,20 +50,21 @@ class AllEventsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     //"draw" method
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.directions_car)),
-              Tab(icon: Icon(Icons.directions_transit)),
-              Tab(icon: Icon(Icons.directions_bike)),
+              Tab(text: '23 Mon'),
+              Tab(text: '24 Tue'),
+              Tab(text: '25 Wen'),
+              Tab(text: '26 Thu'),
             ],
           ),
           title: Text('All events'),
         ),
         body: TabBarView(
-          children: [_buildList(), _buildList(), _buildList()],
+          children: [_buildList(), _buildList(), _buildList(), _buildList()],
         ),
       ),
     );
