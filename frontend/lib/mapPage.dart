@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 
-
 class MapPage extends StatefulWidget {
   final AssetImage _map = AssetImage("lib/assets/images/FEUPmap.png");
 
@@ -18,23 +17,19 @@ class MapController extends State<MapPage> {
   MapController(this._map);
 
   @override
-  Widget build(BuildContext context) { //"draw" method
+  Widget build(BuildContext context) {
+    //"draw" method
     return Container(
-      alignment: Alignment.center,
+        alignment: Alignment.center,
         child: SizedBox.expand(
             child: MatrixGestureDetector(
-                onMatrixUpdate: (Matrix4 m, Matrix4 tm, Matrix4 sm, Matrix4 rm) {
+                onMatrixUpdate:
+                    (Matrix4 m, Matrix4 tm, Matrix4 sm, Matrix4 rm) {
                   setState(() {
                     _matrix = m;
                   });
                 },
-                child: Transform(
-                    transform: _matrix,
-                    child: Image(image: _map)
-                )
-            )
-        )
-    );
+                child:
+                    Transform(transform: _matrix, child: Image(image: _map)))));
   }
-
 }
