@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
+import 'Location.dart';
 import 'User.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -85,6 +86,17 @@ class MapController extends State<MapPage> {
 
   }
 
+  Future<List<Location>> search(String search) async {
+    await Future.delayed(Duration(seconds: 2));
+    return List.generate(search.length, (int index) {
+      return Location(
+        "Title : $search $index",
+        "Description :$search $index",
+        "Undefined"
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) { //"draw" method
     return Container(
@@ -98,9 +110,16 @@ class MapController extends State<MapPage> {
                 width: 360,
                 height: 300,
                 child: SearchBar(
+                  onSearch: search,
+                  onItemFound: (Location post, int index) {
+                    return ListTile(
+                      title: Text(post.name),
+                      subtitle: Text(post.floor),
+                    );
+                  },
                   searchBarStyle: SearchBarStyle(
                     backgroundColor: Color.fromRGBO(255, 255, 255, .95),
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
                     padding: EdgeInsets.all(5.0),
                   ),
                 ),
