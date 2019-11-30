@@ -1,6 +1,51 @@
 import 'package:flutter/material.dart';
 
-class EventsPage extends StatelessWidget {
+class EventsPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new EventsPageState();
+  }
+}
+  bool three = false;
+  bool four = false;
+  bool five = false;
+  bool six = false;
+
+
+class EventsPageState extends State<StatefulWidget> {
+
+  void setThree() {
+    setState(() {
+      three = true;
+      five = false;
+      four = false;
+      six = false;
+    });
+  }
+void setFour() {
+    setState(() {
+      three = false;
+      five = false;
+      four = true;
+      six = false;
+    });
+  }
+  void setFive() {
+    setState(() {
+      three = false;
+      five = true;
+      four = false;
+      six = false;
+    });
+  }
+void setSix() {
+    setState(() {
+      three = false;
+      five = false;
+      four = false;
+      six = true;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     //"draw" method
@@ -8,8 +53,8 @@ class EventsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Flexible(
+          flex: 1,
           child: Container(
-            height: 80.0,
             color: Colors.grey,
             child: Row(
               children: <Widget>[
@@ -24,13 +69,20 @@ class EventsPage extends StatelessWidget {
                         children: <Widget>[
                           Flexible(
                             child: Row(
-                             children: <Widget>[
-                               Expanded(child: Text('  Mon',textAlign: TextAlign.center)),
-                               Expanded(child: Text(' Tue',textAlign: TextAlign.center)),
-                               Expanded(child: Text(' Wen',textAlign: TextAlign.center)),
-                               Expanded(child: Text(' Thu',textAlign: TextAlign.center))
-
-                             ],
+                              children: <Widget>[
+                                Expanded(
+                                    child: Text('  Mon',
+                                        textAlign: TextAlign.center)),
+                                Expanded(
+                                    child: Text(' Tue',
+                                        textAlign: TextAlign.center)),
+                                Expanded(
+                                    child: Text(' Wen',
+                                        textAlign: TextAlign.center)),
+                                Expanded(
+                                    child: Text(' Thu',
+                                        textAlign: TextAlign.center))
+                              ],
                             ),
                           ),
                           Flexible(
@@ -44,9 +96,9 @@ class EventsPage extends StatelessWidget {
                                   Expanded(
                                     child: Container(
                                       child: RawMaterialButton(
-                                        onPressed: () {},
+                                        onPressed: setThree,
                                         shape: new CircleBorder(),
-                                        fillColor: Colors.white,
+                                        fillColor: three ? Colors.orangeAccent : Colors.white,
                                         child: Text('23'),
                                       ),
                                     ),
@@ -54,9 +106,9 @@ class EventsPage extends StatelessWidget {
                                   Expanded(
                                     child: Container(
                                       child: RawMaterialButton(
-                                        onPressed: () {},
+                                        onPressed: setFour,
                                         shape: new CircleBorder(),
-                                        fillColor: Colors.orangeAccent,
+                                        fillColor: four ? Colors.orangeAccent : Colors.white,
                                         child: Text('24'),
                                       ),
                                     ),
@@ -64,9 +116,9 @@ class EventsPage extends StatelessWidget {
                                   Expanded(
                                     child: Container(
                                       child: RawMaterialButton(
-                                        onPressed: () {},
+                                        onPressed: setFive,
                                         shape: new CircleBorder(),
-                                        fillColor: Colors.white,
+                                        fillColor: five ? Colors.orangeAccent : Colors.white,
                                         child: Text('25'),
                                       ),
                                     ),
@@ -74,9 +126,9 @@ class EventsPage extends StatelessWidget {
                                   Expanded(
                                     child: Container(
                                       child: RawMaterialButton(
-                                        onPressed: () {},
+                                        onPressed: setSix,
                                         shape: new CircleBorder(),
-                                        fillColor: Colors.white,
+                                        fillColor: six ? Colors.orangeAccent : Colors.white,
                                         child: Text('26'),
                                       ),
                                     ),
@@ -105,6 +157,10 @@ class EventsPage extends StatelessWidget {
             ),
           ),
         ),
+        Flexible(
+          flex: 5,
+          child: Container(),
+        )
       ],
     );
   }
