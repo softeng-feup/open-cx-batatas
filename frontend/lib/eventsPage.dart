@@ -6,14 +6,13 @@ class EventsPage extends StatefulWidget {
     return new EventsPageState();
   }
 }
-  bool three = false;
-  bool four = false;
-  bool five = false;
-  bool six = false;
 
+bool three = false;
+bool four = false;
+bool five = false;
+bool six = false;
 
 class EventsPageState extends State<StatefulWidget> {
-
   void setThree() {
     setState(() {
       three = true;
@@ -22,7 +21,8 @@ class EventsPageState extends State<StatefulWidget> {
       six = false;
     });
   }
-void setFour() {
+
+  void setFour() {
     setState(() {
       three = false;
       five = false;
@@ -30,6 +30,7 @@ void setFour() {
       six = false;
     });
   }
+
   void setFive() {
     setState(() {
       three = false;
@@ -38,7 +39,8 @@ void setFour() {
       six = false;
     });
   }
-void setSix() {
+
+  void setSix() {
     setState(() {
       three = false;
       five = false;
@@ -46,6 +48,7 @@ void setSix() {
       six = true;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     //"draw" method
@@ -55,14 +58,18 @@ void setSix() {
         Flexible(
           flex: 1,
           child: Container(
-            color: Colors.grey,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius:
+                  BorderRadius.only(bottomRight: Radius.circular(20.0)),
+            ),
             child: Row(
               children: <Widget>[
                 Flexible(
                     child: Row(
                   children: <Widget>[
                     Expanded(
-                      flex: 9,
+                      flex: 5,
                       child: Container(
                           child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -98,7 +105,9 @@ void setSix() {
                                       child: RawMaterialButton(
                                         onPressed: setThree,
                                         shape: new CircleBorder(),
-                                        fillColor: three ? Colors.orangeAccent : Colors.white,
+                                        fillColor: three
+                                            ? Colors.orangeAccent
+                                            : Colors.white,
                                         child: Text('23'),
                                       ),
                                     ),
@@ -108,7 +117,9 @@ void setSix() {
                                       child: RawMaterialButton(
                                         onPressed: setFour,
                                         shape: new CircleBorder(),
-                                        fillColor: four ? Colors.orangeAccent : Colors.white,
+                                        fillColor: four
+                                            ? Colors.orangeAccent
+                                            : Colors.white,
                                         child: Text('24'),
                                       ),
                                     ),
@@ -118,7 +129,9 @@ void setSix() {
                                       child: RawMaterialButton(
                                         onPressed: setFive,
                                         shape: new CircleBorder(),
-                                        fillColor: five ? Colors.orangeAccent : Colors.white,
+                                        fillColor: five
+                                            ? Colors.orangeAccent
+                                            : Colors.white,
                                         child: Text('25'),
                                       ),
                                     ),
@@ -128,7 +141,9 @@ void setSix() {
                                       child: RawMaterialButton(
                                         onPressed: setSix,
                                         shape: new CircleBorder(),
-                                        fillColor: six ? Colors.orangeAccent : Colors.white,
+                                        fillColor: six
+                                            ? Colors.orangeAccent
+                                            : Colors.white,
                                         child: Text('26'),
                                       ),
                                     ),
@@ -159,7 +174,33 @@ void setSix() {
         ),
         Flexible(
           flex: 5,
-          child: Container(),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                    alignment: AlignmentDirectional.centerStart,
+                    color: Color.fromRGBO(50, 50, 50, 0.3),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(child: Text('08h00')),
+                        Expanded(child: Text('10h00')),
+                        Expanded(child: Text('12h00')),
+                        Expanded(child: Text('14h00')),
+                        Expanded(child: Text('16h00')),
+                        Expanded(child: Text('18h00')),
+                        Expanded(child: Text('20h00')),
+                      ],
+                    ),
+                  )),
+              Expanded(
+                  flex: 6,
+                  child: Container(
+                    alignment: AlignmentDirectional.centerStart,
+                    color: Colors.white,
+                  ))
+            ],
+          ),
         )
       ],
     );
