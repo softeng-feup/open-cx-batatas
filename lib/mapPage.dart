@@ -91,9 +91,9 @@ class MapController extends State<MapPage> {
     await Future.delayed(Duration(seconds: 0));
     return List.generate(search.length, (int index) {
       return Location(
-        "Title : $search $index",
-        "Floor :$search $index",
-        "Undefined"
+        "$search $index",
+        "$index",
+        "Room: ", 0, 0
       );
     });
   }
@@ -137,8 +137,8 @@ class MapController extends State<MapPage> {
                             color: Colors.white,
                           ),
                           child: ListTile(
-                            title: Text(location.name),
-                            subtitle: Text(location.floor),
+                            title: Text(location.type + location.name),
+                            subtitle: Text("Floor: " + location.floor),
                           ),
                         );
                     },
