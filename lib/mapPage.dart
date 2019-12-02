@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
+import 'package:flappy_search_bar/scaled_tile.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'Location.dart';
@@ -87,11 +88,11 @@ class MapController extends State<MapPage> {
   }
 
   Future<List<Location>> search(String search) async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 0));
     return List.generate(search.length, (int index) {
       return Location(
         "Title : $search $index",
-        "Description :$search $index",
+        "Floor :$search $index",
         "Undefined"
       );
     });
@@ -106,21 +107,46 @@ class MapController extends State<MapPage> {
             map,
             Center(
               heightFactor: 1,
-              child: Container (
-                width: 360,
-                height: 300,
-                child: SearchBar(
-                  onSearch: search,
-                  onItemFound: (Location post, int index) {
-                    return ListTile(
-                      title: Text(post.name),
-                      subtitle: Text(post.floor),
-                    );
-                  },
-                  searchBarStyle: SearchBarStyle(
-                    backgroundColor: Color.fromRGBO(255, 255, 255, .95),
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    padding: EdgeInsets.all(5.0),
+              child: ListTileTheme(
+                style: ListTileStyle.list,
+                iconColor: Colors.blue,
+                selectedColor: Colors.red,
+                child: Container (
+                  width: 360,
+                  height: 300,
+                  child: SearchBar(
+                    iconActiveColor: Colors.blue,
+                    hintText: "Search location here",
+                    hintStyle: TextStyle(
+                      color: Color.fromRGBO(212, 212, 212, 1),
+                    ),
+                    textStyle: TextStyle(
+                      color: Colors.black,
+                    ),
+                    placeHolder: SizedBox.shrink(),
+                    loader: SizedBox.shrink(),
+                    mainAxisSpacing: 10,
+                    searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
+                    listPadding: EdgeInsets.symmetric(horizontal: 10),
+                    onSearch: search,
+                    onItemFound: (Location location, int index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            border: Border.fromBorderSide(BorderSide(color: Colors.grey)),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          child: ListTile(
+                            title: Text(location.name),
+                            subtitle: Text(location.floor),
+                          ),
+                        );
+                    },
+                    searchBarStyle: SearchBarStyle(
+                      backgroundColor: Color.fromRGBO(255, 255, 255, .95),
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      padding: EdgeInsets.all(5.0),
+                    ),
                   ),
                 ),
               ),
