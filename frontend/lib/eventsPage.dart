@@ -78,12 +78,23 @@ Widget getEvents(List<String> strings) {
                   width: 100,
                   decoration: BoxDecoration(
                     border: Border.all(),
-                    color: Colors.red[300],
+                    color: Colors.blue[300],
                   ),
-                  child: Center(child:Text(
-                    item,
-                    textAlign: TextAlign.center,
-                  )))))
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                          child: Text(
+                        item,
+                        textAlign: TextAlign.center,
+                      )),
+                      Expanded(
+                        child: Container(color: Colors.blue[100],
+                        height: 30,
+                        width: 1000,),
+                        
+                      )
+                    ],
+                  ))))
           .toList());
 }
 
@@ -135,8 +146,8 @@ class EventsPageState extends State<StatefulWidget> {
   ];
 
   final List<String> events = <String>[
-    'Papa Jonhs',
-    'Pizza',
+    'JavaScript Workshop - B323',
+    '3D Printing Talk - B002',
   ];
 
   @override

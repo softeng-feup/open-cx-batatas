@@ -148,10 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: new Icon(Icons.calendar_today),
             title: new Text('Events'),
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.add_circle),
-            title: new Text('Hey'),
-          ),
+          
         ],
       ),
     );
