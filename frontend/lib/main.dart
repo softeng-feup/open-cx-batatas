@@ -49,7 +49,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 1;
+  int _currentIndex = 2;
   final List<Widget> _children = [
     ProfilePage(),
     MapPage(),
@@ -72,17 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: _children[_currentIndex],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        child: Icon(Icons.navigation),
-        backgroundColor: Colors.green,
-      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
-        type: BottomNavigationBarType
-            .fixed, // isto foi a correção: https://github.com/flutter/flutter/issues/13642
+        type: BottomNavigationBarType.fixed, // isto foi a correção: https://github.com/flutter/flutter/issues/13642
         selectedItemColor: new Color.fromRGBO(0, 0, 0, 1.0),
         unselectedItemColor: new Color.fromRGBO(0, 0, 0, 0.3),
         backgroundColor: new Color.fromRGBO(255, 255, 255, 1.0),
