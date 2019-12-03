@@ -72,13 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: _children[_currentIndex],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        child: Icon(Icons.navigation),
-        backgroundColor: Colors.green,
-      ),
+      
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
         type: BottomNavigationBarType
@@ -101,10 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: new Icon(Icons.calendar_today),
             title: new Text('Events'),
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.add_circle),
-            title: new Text('Hey'),
-          ),
+          
         ],
       ),
     );
