@@ -2,3 +2,11 @@ env/
 
 #cenas de vscode
 .vscode
+
+# android studio (?)
+frontend/.idea/
+
+# nao sei bem ao certo, penso que nao seja preciso
+frontend/android/app/.settings
+frontend/android/app/.project
+frontend/android/app/.classpath
