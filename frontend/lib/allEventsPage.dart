@@ -29,7 +29,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
               4),
           _tile(
               'Do you need a router?',
-              'Workshop about configure a router by Cicsco ',
+              'Workshop about configure a router by Cisco ',
               '12:00\n13:00',
               5),
           Divider(),
