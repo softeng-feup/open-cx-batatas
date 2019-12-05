@@ -37,74 +37,61 @@ class MapController extends State<MapPage> {
   User _user;
   String _mapStyle;
 
-  //TODO Preciso de localização de user (Usar markers n está a dar, talvez usar uma imagem como overlay mas tenho o problema de passar latitudee longitude para ecrã + zoom e cenas)
-  //TODO Preciso de ligar a localização retornada pelos beacons ao user
-  //TODO Precisa de uma search bar e colocar um marker no sitio pesquisado
+  //TODO precisa de ter as localizações da Feup pesquisaveis e mudar para o piso correto
   //TODO Precisa de um butão para determinar a rota para o local
   //TODO butão para mostar todas as maquinas de café
   //TODO dar display a localização das outras pessoas
   //TODO expandir os icons de outras pessoas para uma imagem deles e ao carregar levar para o perfil deles
 
   GoogleMap map;
-  Set<Circle> circles;
+  Set<Circle> circles = new Set<Circle>();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  Set<Marker> markerSet = new Set<Marker>();
 
   @override
   void initState() {
     super.initState();
 
-    BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(0.5, 0.5)), 'lib/assets/images/userIcon.png').then((onValue) {
-          Marker marker = Marker(position: LatLng(_user.xCoord, _user.yCoord), markerId: MarkerId("UserLocation"));
-          markers[MarkerId("UserLocation")] = marker;
-    });
-
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
-
-      circles = Set.from([Circle(
-        circleId: CircleId("1"),
-        center: LatLng(_user.xCoord, _user.yCoord),
-        radius: 4000,
-      )]);
     });
-
-    map = GoogleMap(
-      mapType: MapType.normal,
-      initialCameraPosition: _feupPosition,
-      minMaxZoomPreference: zoomPreference,
-      myLocationEnabled: true,
-      indoorViewEnabled: true,
-      compassEnabled: false,
-      myLocationButtonEnabled: true,
-      cameraTargetBounds: cameraBounds,
-      onMapCreated: (GoogleMapController controller) {
-        controller.setMapStyle(_mapStyle);
-        _controller.complete(controller);
-      },
-      circles: circles,
-    );
-
   }
 
   Future<List<Location>> search(String search) async {
     await Future.delayed(Duration(seconds: 0));
-    return List.generate(search.length, (int index) {
+    return List.generate(1, (int index) {
       return Location(
-        "$search $index",
-        "$index",
-        "Room: ", 0, 0
+        "$search",
+        "3",
+        "Room: ", 41.177451, -8.595551
       );
     });
   }
 
   @override
   Widget build(BuildContext context) { //"draw" method
+    //TODO Preciso de ligar a localização retornada pelos beacons ao user
+    this.updateUserLocation();
     return Container(
       alignment: Alignment.center,
         child: Stack(
           children: <Widget>[
-            map,
+        GoogleMap(
+        mapType: MapType.normal,
+          initialCameraPosition: _feupPosition,
+          minMaxZoomPreference: zoomPreference,
+          myLocationEnabled: true,
+          indoorViewEnabled: true,
+          compassEnabled: false,
+          myLocationButtonEnabled: true,
+          cameraTargetBounds: cameraBounds,
+          onMapCreated: (GoogleMapController controller) {
+            controller.setMapStyle(_mapStyle);
+            _controller.complete(controller);
+          },
+          circles: circles,
+          markers: markerSet,
+        ),
             Center(
               heightFactor: 1,
               child: ListTileTheme(
@@ -132,13 +119,15 @@ class MapController extends State<MapPage> {
                     onItemFound: (Location location, int index) {
                         return Container(
                           decoration: BoxDecoration(
-                            border: Border.fromBorderSide(BorderSide(color: Colors.grey)),
+                            border: Border.fromBorderSide(BorderSide(color: Colors.blue)),
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.white,
                           ),
                           child: ListTile(
                             title: Text(location.type + location.name),
                             subtitle: Text("Floor: " + location.floor),
+                            onTap: () {this.markLocation(location);},
+                            trailing: Icon(Icons.location_on, color: Colors.deepOrange),
                           ),
                         );
                     },
@@ -154,5 +143,32 @@ class MapController extends State<MapPage> {
           ],
         )
     );
+  }
+
+  void markLocation(Location location) async {
+    setState(() {
+      markerSet.clear();
+      Marker marker = Marker(position: LatLng(location.latitude, location.longitude), markerId: MarkerId("markedLocation"),
+                            icon: BitmapDescriptor.defaultMarkerWithHue(15));
+
+      markerSet.add(marker);
+    });
+  }
+
+  void updateUserLocation() async {
+    setState(() {
+      circles.clear();
+      Circle circle = Circle(
+        circleId: CircleId("1"),
+        center: LatLng(_user.latitude, _user.longitude),
+        radius: 2,
+        visible: true,
+        fillColor: Colors.blue,
+        strokeColor: Colors.lightBlue,
+        strokeWidth: 1,
+      );
+
+      circles.add(circle);
+    });
   }
 }
