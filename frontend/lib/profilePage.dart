@@ -5,21 +5,32 @@ class ProfilePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return ProfileText(_profilePic);
+    return ProfilePageState(_profilePic);
   }
 }
 
-class ProfileText extends State<ProfilePage> {
+Size screenSize(BuildContext context) {
+  return MediaQuery.of(context).size;
+}
+
+double screenHeight(BuildContext context) {
+  return MediaQuery.of(context).size.height;
+}
+
+double screenWidth(BuildContext context) {
+  return MediaQuery.of(context).size.width;
+}
+
+class ProfilePageState extends State<ProfilePage> {
   final AssetImage _profilePic;
 
-  final imageRadius = 100.0; //fazer relativo ao ecra (dont know how though)
-  final name = "Elon Musk";
+  final name = "Sérgio Conceição";
   final position = "Student";
   final job = "Super Company";
   final interest = "Bird Watching";
   final elementPadding = 4.0;
 
-  ProfileText(this._profilePic);
+  ProfilePageState(this._profilePic);
 
   @override
   Widget build(BuildContext context) {
@@ -27,21 +38,27 @@ class ProfileText extends State<ProfilePage> {
     return Container(
       padding: EdgeInsets.only(top: 10.0),
       child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             //primeiro CircleAvatar para a borda
-            radius: imageRadius,
+            radius: screenWidth(context) * 0.3,
             child: CircleAvatar(
               backgroundImage: NetworkImage(
                   "https://i.imgur.com/hlCsBwp.jpg"), //linkar imagens de perfil da base de dados
-              radius: imageRadius - 10.0,
+              radius: screenWidth(context) * 0.25,
             ),
           ),
           // nome da pessoa
           Container(
+            width: screenWidth(context) * 0.55,
+            height: screenHeight(context) * 0.07,
             color: Colors.transparent,
-            padding: EdgeInsets.all(elementPadding),
+            padding: EdgeInsets.only(
+              top: screenHeight(context) * 0.01,
+              bottom: screenHeight(context) * 0.01,
+              left: screenWidth(context) * 0.01,
+              right: screenWidth(context) * 0.01,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.blue,
@@ -51,19 +68,25 @@ class ProfileText extends State<ProfilePage> {
                     bottomLeft: Radius.circular(40.0),
                     bottomRight: Radius.circular(40.0)),
               ),
-              padding: EdgeInsets.all(elementPadding),
+              padding: EdgeInsets.only(
+                top: screenHeight(context) * 0.01,
+                bottom: screenHeight(context) * 0.01,
+                left: screenWidth(context) * 0.01,
+                right: screenWidth(context) * 0.01,
+              ),
               child: Text(
                 name,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                  fontSize: 17, // fazer relativo ao ecra
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
           // cenas sobre a pessoa
           Container(
-            // padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
                 Row(
