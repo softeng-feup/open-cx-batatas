@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 
 class MapPage extends StatefulWidget {
@@ -54,6 +55,8 @@ class MapController extends State<MapPage> {
   void initState() {
     super.initState();
 
+    fetchRooms();
+
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
     });
@@ -69,6 +72,13 @@ class MapController extends State<MapPage> {
 
   Future<String> _loadJSON() async {
     return await rootBundle.loadString('lib/assets/graph.json');;
+  }
+
+  void fetchRooms() async {
+    final res = await http.get('http://diogo98s.pythonanywhere.com/api/v1/rooms/');
+    print('\n\n\n\n\n\n');
+    print(json.decode(res.body));
+    print('\n\n\n\n\n\n');
   }
 
   Future<List<Location>> search(String search) async {
