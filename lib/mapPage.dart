@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
-import 'package:flappy_search_bar/scaled_tile.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'Location.dart';
@@ -8,6 +7,7 @@ import 'User.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 
 
 class MapPage extends StatefulWidget {
@@ -36,9 +36,11 @@ class MapController extends State<MapPage> {
   );
   User _user;
   String _mapStyle;
+  LocationLists locations;
 
   //TODO precisa de ter as localizações da Feup pesquisaveis e mudar para o piso correto
   //TODO Precisa de um butão para determinar a rota para o local
+  //TODO A rota pode ser calculada usando o google maps, a unica coisa a ter em atenção são as mudanças de pisos, que terão de ser feitas com pontos intermédios nas escadas
   //TODO butão para mostar todas as maquinas de café
   //TODO dar display a localização das outras pessoas
   //TODO expandir os icons de outras pessoas para uma imagem deles e ao carregar levar para o perfil deles
@@ -55,14 +57,33 @@ class MapController extends State<MapPage> {
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
     });
+
+    _loadGraph();
+  }
+
+  Future _loadGraph() async {
+    String jsonString = await _loadJSON();
+    final parsedJsonList = json.decode(jsonString);
+    locations = new LocationLists.fromJSON(parsedJsonList);
+  }
+
+  Future<String> _loadJSON() async {
+    return await rootBundle.loadString('lib/assets/graph.json');;
   }
 
   Future<List<Location>> search(String search) async {
-    await Future.delayed(Duration(seconds: 0));
+    //Steps:
+    //1- create the JSON serializable classes
+    //2- use the parser to put everything into classes
+    //3- create a list for all the rooms (later also allow events)
+    //4- create a "search engine" to get the adequate results from the list
+
+
+
     return List.generate(1, (int index) {
       return Location(
         "$search",
-        "3",
+        3,
         "Room: ", 41.177451, -8.595551
       );
     });
@@ -125,7 +146,7 @@ class MapController extends State<MapPage> {
                           ),
                           child: ListTile(
                             title: Text(location.type + location.name),
-                            subtitle: Text("Floor: " + location.floor),
+                            subtitle: Text("Floor: " + location.floor.toString()),
                             onTap: () {this.markLocation(location);},
                             trailing: Icon(Icons.location_on, color: Colors.deepOrange),
                           ),
@@ -164,8 +185,8 @@ class MapController extends State<MapPage> {
         radius: 2,
         visible: true,
         fillColor: Colors.blue,
-        strokeColor: Colors.lightBlue,
-        strokeWidth: 1,
+        strokeColor: Colors.deepOrange,
+        strokeWidth: 2,
       );
 
       circles.add(circle);
