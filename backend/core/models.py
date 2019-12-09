@@ -95,11 +95,12 @@ class Beacon(models.Model):
     Beacon model.
     Used in the implementation of direction maps.
     """
+    mac_address = models.CharField(max_length=17)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
-    isActive = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return '[{},{}]'.format(self.id, self.isActive)
+        return '[{},{}]'.format(self.id, self.is_active)
 
 
 class Tag(models.Model):

@@ -15,7 +15,7 @@ class LocationSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Location
-        fields = ['x', 'y', 'z']
+        fields = ['latitude', 'longitude', 'floor']
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -49,15 +49,19 @@ class RoomSerializer(serializers.ModelSerializer):
     """
     Room serializer.
     """
+    location = LocationSerializer()
+
     class Meta:
         model = Room
-        fields = ['name']
+        fields = ['name', 'location']
 
 
 class BeaconSerializer(serializers.ModelSerializer):
     """
     Beacon serializer.
     """
+    location = LocationSerializer()
+
     class Meta:
         model = Beacon
-        fields = ['id']
+        fields = ['id', 'mac_address', 'is_active', 'location']
