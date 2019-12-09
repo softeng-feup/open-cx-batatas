@@ -29,6 +29,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     gender = models.CharField(_("gender"), max_length=6, choices=GENDER_CHOICES,
                               default='', blank=True)
+    # profile
+    position = models.CharField(max_length=30, null=True, blank=True)
+    company = models.CharField(max_length=30, null=True, blank=True)
+    is_speaker = models.BooleanField(default=False)
+
     is_active = models.BooleanField(_('active'), default=True)
     email_confirmed = models.BooleanField(default=False)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
@@ -74,12 +79,15 @@ class Location(models.Model):
     Location model.
     Used for building direction maps.
     """
-    x = models.FloatField()
-    y = models.FloatField()
-    z = models.FloatField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    floor = models.SmallIntegerField()
+    # x = models.FloatField()
+    # y = models.FloatField()
+    # z = models.FloatField()
 
     def __str__(self):
-        return '[{}, {}, {}]'.format(self.x, self.y, self.z)
+        return '[{}, {}, floor_{}]'.format(self.latitude, self.longitude, self.floor)
 
 
 class Beacon(models.Model):
@@ -111,7 +119,8 @@ class Room(models.Model):
     Used as the location of events.
     """
     name = models.CharField(max_length=30)
-    bealocation = models.ManyToManyField(Beacon) # geolocation of beacons
+    location = models.ForeignKey(Location, on_delete=models.PROTECT)
+    # bealocation = models.ManyToManyField(Beacon) # geolocation of beacons
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -131,6 +140,18 @@ class Event(models.Model):
 
     def __str__(self):
         return '{}'.format(self.name)
+
+
+class Bookmarks(models.Model):
+    """
+    Bookmarks model.
+    Used for bookmarking events.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} -> {}'.format(self.user, self.event.name)
 
 
 class Notification(models.Model):

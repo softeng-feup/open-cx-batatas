@@ -25,7 +25,7 @@ SECRET_KEY = 'et#9&mhbqjlpy-5%#on4qbm%rfaw%33m-0p4gf@poq*tlnjja&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['diogo98s.pythonanywhere.com']
+ALLOWED_HOSTS = ['diogo98s.pythonanywhere.com', 'localhost']
 
 
 # Application definition
