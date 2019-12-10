@@ -39,7 +39,6 @@ class MapController extends State<MapPage> {
   );
   User _user;
   String _mapStyle;
-  LocationLists locations;
 
   //TODO precisa de ter as localizações da Feup pesquisaveis e mudar para o piso correto
   //TODO Precisa de um butão para determinar a rota para o local
@@ -53,7 +52,7 @@ class MapController extends State<MapPage> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Set<Marker> markerSet = new Set<Marker>();
 
-  List<Location> rooms = new List<Location>();
+  List<Place> rooms = new List<Place>();
 
   @override
   void initState() {
@@ -65,18 +64,6 @@ class MapController extends State<MapPage> {
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
     });
-
-    _loadGraph();
-  }
-
-  Future _loadGraph() async {
-    String jsonString = await _loadJSON();
-    final parsedJsonList = json.decode(jsonString);
-    locations = new LocationLists.fromJSON(parsedJsonList);
-  }
-
-  Future<String> _loadJSON() async {
-    return await rootBundle.loadString('lib/assets/graph.json');;
   }
 
   @override
@@ -90,10 +77,10 @@ class MapController extends State<MapPage> {
     var data = json.decode(res.body);
     List room_fetched = data as List;
 
-    rooms = room_fetched.map<Location>((json) => Location.fromJSON(json)).toList();
+    rooms = room_fetched.map<Place>((json) => Place.fromJSON(json)).toList();
   }
 
-  Future<List<Location>> search(String searchStr) async {
+  Future<List<Place>> search(String searchStr) async {
     // Steps:
     // 1- create the JSON serializable classes CHECK
     // 2- use the parser to put everything into classes CHECK
@@ -101,10 +88,6 @@ class MapController extends State<MapPage> {
     // 4- create a "search engine" to get the adequate results from the list CHECK
 
     return rooms.where((place) => place.name.toLowerCase().contains(searchStr)).toList();
-  }
-
-  bool equalsIgnoreCase(String string1, String string2) {
-    return string1?.toLowerCase() == string2?.toLowerCase();
   }
 
   @override
@@ -155,7 +138,7 @@ class MapController extends State<MapPage> {
                     searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
                     listPadding: EdgeInsets.symmetric(horizontal: 10),
                     onSearch: search,
-                    onItemFound: (Location location, int index) {
+                    onItemFound: (Place place, int index) {
                         return Container(
                           decoration: BoxDecoration(
                             border: Border.fromBorderSide(BorderSide(color: Colors.blue)),
@@ -163,9 +146,9 @@ class MapController extends State<MapPage> {
                             color: Colors.white,
                           ),
                           child: ListTile(
-                            title: Text(location.type + location.name),
-                            subtitle: Text("Floor: " + location.floor.toString()),
-                            onTap: () {this.markLocation(location);},
+                            title: Text(place.type + place.name),
+                            subtitle: Text("Floor: " + place.floor.toString()),
+                            onTap: () {this.markLocation(place);},
                             trailing: Icon(Icons.location_on, color: Colors.deepOrange),
                           ),
                         );
@@ -184,10 +167,10 @@ class MapController extends State<MapPage> {
     );
   }
 
-  void markLocation(Location location) async {
+  void markLocation(Place place) async {
     setState(() {
       markerSet.clear();
-      Marker marker = Marker(position: LatLng(location.latitude, location.longitude), markerId: MarkerId("markedLocation"),
+      Marker marker = Marker(position: LatLng(place.latitude, place.longitude), markerId: MarkerId("markedLocation"),
                             icon: BitmapDescriptor.defaultMarkerWithHue(15));
 
       markerSet.add(marker);

@@ -1,12 +1,12 @@
-class Location {
+class Place {
   final String name;
   final int floor;
   final String type;
   final double latitude, longitude;
 
-  Location(this.name, this.floor, this.type, this.latitude, this.longitude);
+  Place(this.name, this.floor, this.type, this.latitude, this.longitude);
 
-  factory Location.fromJSON(Map<String, dynamic> parsedJson){
+  factory Place.fromJSON(Map<String, dynamic> parsedJson){
     if(parsedJson['place_type'] == "ROOM") {
       return Room(parsedJson['name'], parsedJson['location']['floor'], parsedJson['location']['latitude'], parsedJson['location']['longitude']);
     }
@@ -20,26 +20,26 @@ class Location {
   }
 }
 
-class Room extends Location {
+class Room extends Place {
   Room(String name, int floor, double latitude, double longitude) : super(name, floor, "Room: ", latitude, longitude);
   //Room will also display small list of next events if there are any
 }
 
-class CoffeeMachine extends Location {
+class CoffeeMachine extends Place {
   CoffeeMachine(int floor, double latitude, double longitude) : super("Coffee", floor, "Coffe Machine: ", latitude, longitude);
 }
 
-class Stairs extends Location {
+class Stairs extends Place {
   Stairs(int floor, double latitude, double longitude) : super("Stairs", floor, "Coffe Machine: ", latitude, longitude);
 }
 
-class LocationLists {
+class PlaceLists {
   List<Room> rooms;
   List<CoffeeMachine> coffees;
-  List<Location> locations;
+  List<Place > locations;
 
-  LocationLists.fromJSON(List<dynamic> parsedJsonList) {
-    locations = parsedJsonList.map((i)=>Location.fromJSON(i)).toList();
+  PlaceLists.fromJSON(List<dynamic> parsedJsonList) {
+    locations = parsedJsonList.map((i)=>Place.fromJSON(i)).toList();
     //Need to put correct locations in coffees and rooms
   }
 }
