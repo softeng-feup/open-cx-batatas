@@ -8,6 +8,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'constants.dart' as Constants;
 
 
 class MapPage extends StatefulWidget {
@@ -36,7 +39,6 @@ class MapController extends State<MapPage> {
   );
   User _user;
   String _mapStyle;
-  LocationLists locations;
 
   //TODO precisa de ter as localizações da Feup pesquisaveis e mudar para o piso correto
   //TODO Precisa de um butão para determinar a rota para o local
@@ -50,43 +52,41 @@ class MapController extends State<MapPage> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Set<Marker> markerSet = new Set<Marker>();
 
+  List<Place> places = new List<Place>();
+
   @override
   void initState() {
     super.initState();
 
+    fetchPlaces();
+    // TODO: Start scanning of BLE devices
+
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
     });
-
-    _loadGraph();
   }
 
-  Future _loadGraph() async {
-    String jsonString = await _loadJSON();
-    final parsedJsonList = json.decode(jsonString);
-    locations = new LocationLists.fromJSON(parsedJsonList);
+  @override
+  void dispose() {
+    // TODO: Stop scanning of BLE devices
+    super.dispose();
   }
 
-  Future<String> _loadJSON() async {
-    return await rootBundle.loadString('lib/assets/graph.json');;
+  void fetchPlaces() async {
+    final res = await http.get(Constants.API_URL + '/api/v1/places/');
+    var data = json.decode(res.body) as List;
+
+    places = data.map<Place>((json) => Place.fromJSON(json)).toList();
   }
 
-  Future<List<Location>> search(String search) async {
-    //Steps:
-    //1- create the JSON serializable classes
-    //2- use the parser to put everything into classes
-    //3- create a list for all the rooms (later also allow events)
-    //4- create a "search engine" to get the adequate results from the list
+  Future<List<Place>> search(String searchStr) async {
+    // Steps:
+    // 1- create the JSON serializable classes CHECK
+    // 2- use the parser to put everything into classes CHECK
+    // 3- create a list for all the rooms (later also allow events) CHECK
+    // 4- create a "search engine" to get the adequate results from the list CHECK
 
-
-
-    return List.generate(1, (int index) {
-      return Location(
-        "$search",
-        3,
-        "Room: ", 41.177451, -8.595551
-      );
-    });
+    return places.where((place) => place.name.toLowerCase().contains(searchStr)).toList();
   }
 
   @override
@@ -137,7 +137,7 @@ class MapController extends State<MapPage> {
                     searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
                     listPadding: EdgeInsets.symmetric(horizontal: 10),
                     onSearch: search,
-                    onItemFound: (Location location, int index) {
+                    onItemFound: (Place place, int index) {
                         return Container(
                           decoration: BoxDecoration(
                             border: Border.fromBorderSide(BorderSide(color: Colors.blue)),
@@ -145,9 +145,9 @@ class MapController extends State<MapPage> {
                             color: Colors.white,
                           ),
                           child: ListTile(
-                            title: Text(location.type + location.name),
-                            subtitle: Text("Floor: " + location.floor.toString()),
-                            onTap: () {this.markLocation(location);},
+                            title: Text(place.type + place.name),
+                            subtitle: Text("Floor: " + place.floor.toString()),
+                            onTap: () {this.markLocation(place);},
                             trailing: Icon(Icons.location_on, color: Colors.deepOrange),
                           ),
                         );
@@ -166,10 +166,10 @@ class MapController extends State<MapPage> {
     );
   }
 
-  void markLocation(Location location) async {
+  void markLocation(Place place) async {
     setState(() {
       markerSet.clear();
-      Marker marker = Marker(position: LatLng(location.latitude, location.longitude), markerId: MarkerId("markedLocation"),
+      Marker marker = Marker(position: LatLng(place.latitude, place.longitude), markerId: MarkerId("markedLocation"),
                             icon: BitmapDescriptor.defaultMarkerWithHue(15));
 
       markerSet.add(marker);
