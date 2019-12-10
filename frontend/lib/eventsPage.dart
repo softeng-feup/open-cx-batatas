@@ -7,6 +7,13 @@ class EventsPage extends StatefulWidget {
   }
 }
 
+class Event {
+  static int startTime;
+  static int endTime;
+  static String description;
+  static String room;
+}
+
 class HeaderWidget extends StatelessWidget {
   final String text;
 
@@ -50,20 +57,20 @@ bool six = false;
 Widget getTextWidgets(List<String> strings) {
   return new Column(
       children: strings
-          .map((item) => new Flexible(
+          .map((item) => new Expanded(
               child: Container(
                   height: 100,
                   decoration: BoxDecoration(
+                    color: Colors.grey[300],
                     border: Border(
                       right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
                       bottom:
                           BorderSide(width: 1.0, color: Color(0xFFFF000000)),
                     ),
-                    color: Colors.grey[300],
                   ),
                   child: Text(
                     item,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                   ))))
           .toList());
 }
@@ -71,11 +78,11 @@ Widget getTextWidgets(List<String> strings) {
 Widget getEvents(List<String> strings) {
   return new Column(
       children: strings
-          .map((item) => new Flexible(
+          .map((item) => new Expanded(
               child: Container(
                   margin: EdgeInsets.all(20),
                   height: 100,
-                  width: 100,
+
                   decoration: BoxDecoration(
                     border: Border.all(),
                     color: Colors.blue[300],
@@ -88,10 +95,11 @@ Widget getEvents(List<String> strings) {
                         textAlign: TextAlign.center,
                       )),
                       Expanded(
-                        child: Container(color: Colors.blue[100],
-                        height: 30,
-                        width: 1000,),
-                        
+                        child: Container(
+                          color: Colors.blue[100],
+                          height: 30,
+                          width: 1000,
+                        ),
                       )
                     ],
                   ))))
@@ -155,30 +163,15 @@ class EventsPageState extends State<StatefulWidget> {
     return Container(
       child: Stack(
         children: <Widget>[
-          CustomScrollView(
-            slivers: <Widget>[
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.1,
-                ),
-                delegate: SliverChildListDelegate(
-                  [
-                    Container(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.15),
-                        alignment: Alignment.topLeft,
-                        child: getTextWidgets(hours)),
-                    Container(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.15),
-                        alignment: AlignmentDirectional.topCenter,
-                        child: getEvents(events)),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 90, 0, 0),
+            child: 
+          SingleChildScrollView(
+            child: Container(height:600,child:Row(children: <Widget>[
+              Expanded(flex:1,child: getTextWidgets(hours)),
+              Expanded(flex:4,child: getEvents(events))
+            ])),
+          )),
           Positioned(
             child: new Container(
               height: MediaQuery.of(context).size.height * 0.15,
