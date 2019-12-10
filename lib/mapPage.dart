@@ -52,13 +52,13 @@ class MapController extends State<MapPage> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Set<Marker> markerSet = new Set<Marker>();
 
-  List<Place> rooms = new List<Place>();
+  List<Place> places = new List<Place>();
 
   @override
   void initState() {
     super.initState();
 
-    fetchRooms();
+    fetchPlaces();
     // TODO: Start scanning of BLE devices
 
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
@@ -72,12 +72,11 @@ class MapController extends State<MapPage> {
     super.dispose();
   }
 
-  void fetchRooms() async {
+  void fetchPlaces() async {
     final res = await http.get(Constants.API_URL + '/api/v1/places/');
-    var data = json.decode(res.body);
-    List room_fetched = data as List;
+    var data = json.decode(res.body) as List;
 
-    rooms = room_fetched.map<Place>((json) => Place.fromJSON(json)).toList();
+    places = data.map<Place>((json) => Place.fromJSON(json)).toList();
   }
 
   Future<List<Place>> search(String searchStr) async {
@@ -87,7 +86,7 @@ class MapController extends State<MapPage> {
     // 3- create a list for all the rooms (later also allow events) CHECK
     // 4- create a "search engine" to get the adequate results from the list CHECK
 
-    return rooms.where((place) => place.name.toLowerCase().contains(searchStr)).toList();
+    return places.where((place) => place.name.toLowerCase().contains(searchStr)).toList();
   }
 
   @override
