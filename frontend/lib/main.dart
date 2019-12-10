@@ -74,7 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
-        type: BottomNavigationBarType.fixed, // isto foi a correção: https://github.com/flutter/flutter/issues/13642
+        type: BottomNavigationBarType
+            .fixed, // isto foi a correção: https://github.com/flutter/flutter/issues/13642
         selectedItemColor: new Color.fromRGBO(0, 0, 0, 1.0),
         unselectedItemColor: new Color.fromRGBO(0, 0, 0, 0.3),
         backgroundColor: new Color.fromRGBO(255, 255, 255, 1.0),
