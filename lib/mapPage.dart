@@ -9,6 +9,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'constants.dart' as Constants;
 
 
 class MapPage extends StatefulWidget {
@@ -51,11 +53,14 @@ class MapController extends State<MapPage> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Set<Marker> markerSet = new Set<Marker>();
 
+  List<Location> rooms = new List<Location>();
+
   @override
   void initState() {
     super.initState();
 
     fetchRooms();
+    // TODO: Start scanning of BLE devices
 
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
@@ -74,29 +79,32 @@ class MapController extends State<MapPage> {
     return await rootBundle.loadString('lib/assets/graph.json');;
   }
 
-  void fetchRooms() async {
-    final res = await http.get('http://diogo98s.pythonanywhere.com/api/v1/rooms/');
-    print('\n\n\n\n\n\n');
-    print(json.decode(res.body));
-    print('\n\n\n\n\n\n');
+  @override
+  void dispose() {
+    // TODO: Stop scanning of BLE devices
+    super.dispose();
   }
 
-  Future<List<Location>> search(String search) async {
-    //Steps:
-    //1- create the JSON serializable classes
-    //2- use the parser to put everything into classes
-    //3- create a list for all the rooms (later also allow events)
-    //4- create a "search engine" to get the adequate results from the list
+  void fetchRooms() async {
+    final res = await http.get(Constants.API_URL + '/api/v1/places/');
+    var data = json.decode(res.body);
+    List room_fetched = data as List;
 
+    rooms = room_fetched.map<Location>((json) => Location.fromJSON(json)).toList();
+  }
 
+  Future<List<Location>> search(String searchStr) async {
+    // Steps:
+    // 1- create the JSON serializable classes CHECK
+    // 2- use the parser to put everything into classes CHECK
+    // 3- create a list for all the rooms (later also allow events) CHECK
+    // 4- create a "search engine" to get the adequate results from the list CHECK
 
-    return List.generate(1, (int index) {
-      return Location(
-        "$search",
-        3,
-        "Room: ", 41.177451, -8.595551
-      );
-    });
+    return rooms.where((place) => place.name.toLowerCase().contains(searchStr)).toList();
+  }
+
+  bool equalsIgnoreCase(String string1, String string2) {
+    return string1?.toLowerCase() == string2?.toLowerCase();
   }
 
   @override

@@ -7,14 +7,14 @@ class Location {
   Location(this.name, this.floor, this.type, this.latitude, this.longitude);
 
   factory Location.fromJSON(Map<String, dynamic> parsedJson){
-    if(parsedJson['type'] == "room") {
-      return Room(parsedJson['name'], parsedJson['floor'], parsedJson['latitude'], parsedJson['longitude']);
+    if(parsedJson['place_type'] == "ROOM") {
+      return Room(parsedJson['name'], parsedJson['location']['floor'], parsedJson['location']['latitude'], parsedJson['location']['longitude']);
     }
-    else if(parsedJson['type'] == "coffee") {
-      return CoffeeMachine(parsedJson['floor'], parsedJson['latitude'], parsedJson['longitude']);
+    else if(parsedJson['place_type'] == "COFFEE") {
+      return CoffeeMachine(parsedJson['location']['floor'], parsedJson['location']['latitude'], parsedJson['location']['longitude']);
     }
-    else if(parsedJson['type'] == "stairs") {
-      return Stairs(parsedJson['floor'], parsedJson['latitude'], parsedJson['longitude']);
+    else if(parsedJson['place_type'] == "STAIRS") {
+      return Stairs(parsedJson['location']['floor'], parsedJson['location']['latitude'], parsedJson['location']['longitude']);
     }
     else return null;
   }
@@ -42,4 +42,11 @@ class LocationLists {
     locations = parsedJsonList.map((i)=>Location.fromJSON(i)).toList();
     //Need to put correct locations in coffees and rooms
   }
+}
+
+class Beacon {
+  final String macAddress;
+  final double latitude, longitude;
+
+  Beacon(this.macAddress, this.latitude, this.longitude);
 }
