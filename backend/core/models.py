@@ -114,13 +114,21 @@ class Tag(models.Model):
         return '{}'.format(self.name)
 
 
-class Room(models.Model):
+class Place(models.Model):
     """
     Room model.
     Used as the location of events.
     """
     name = models.CharField(max_length=30)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
+    PLACE_TYPES = (
+        ('ROOM', _('Room')),
+        ('COFFEE', _('Coffee')),
+        ('STAIRS', _('Stairs')),
+        ('', _('Undefined')),
+    )
+    place_type = models.CharField(_("type"), max_length=10, choices=PLACE_TYPES,
+                                  default='', blank=True)
     # bealocation = models.ManyToManyField(Beacon) # geolocation of beacons
 
     def __str__(self):
@@ -134,7 +142,7 @@ class Event(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
-    room = models.ForeignKey(Room, on_delete=models.PROTECT)
+    room = models.ForeignKey(Place, on_delete=models.PROTECT)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     updates = models.TextField(null=True, blank=True, default=None)

@@ -3,11 +3,11 @@ Views for api_v1.
 """
 from rest_framework import generics, mixins
 from core.models import Location, Tag,\
-                        Notification, Room,\
+                        Notification, Place,\
                         Event, Beacon
 from .serializers import LocationSerializer, TagSerializer,\
                          EventSerializer, NotificationSerializer,\
-                         RoomSerializer, BeaconSerializer
+                         PlaceSerializer, BeaconSerializer
 
 class LocationList(mixins.ListModelMixin,
                    mixins.CreateModelMixin,
@@ -83,19 +83,19 @@ class NotificationList(mixins.ListModelMixin,
         """
         return self.list(request, *args, **kwargs)
 
-class RoomList(mixins.ListModelMixin,
+class PlaceList(mixins.ListModelMixin,
                generics.GenericAPIView):
     """
-    Lists all rooms.
+    Lists all places.
     """
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+    queryset = Place.objects.all()
+    serializer_class = PlaceSerializer
 
     def get(self, request, *args, **kwargs):
         """
         Handler for GET requests.
 
-        Lists all the rooms.
+        Lists all the places.
         """
         return self.list(request, *args, **kwargs)
 
@@ -111,6 +111,6 @@ class BeaconList(mixins.ListModelMixin,
         """
         Handler for GET requests.
 
-        Lists all the rooms.
+        Lists all the places.
         """
         return self.list(request, *args, **kwargs)

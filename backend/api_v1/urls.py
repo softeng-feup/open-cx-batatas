@@ -9,6 +9,6 @@ urlpatterns = [
     path('tags/', views.TagList.as_view()),
     path('events/', views.EventList.as_view()),
     path('notifications/', views.NotificationList.as_view()),
-    path('rooms/', views.RoomList.as_view()),
+    path('places/', views.PlaceList.as_view()),
     path('beacons/', views.BeaconList.as_view()),
 ]
