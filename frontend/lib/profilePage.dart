@@ -74,14 +74,17 @@ class ProfilePageState extends State<ProfilePage> {
                 left: screenWidth(context) * 0.01,
                 right: screenWidth(context) * 0.01,
               ),
-              child: Text(
-                name,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 17, // fazer relativo ao ecra
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 17, // fazer relativo ao ecra
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
           ),
