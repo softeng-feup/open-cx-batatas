@@ -1,4 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+
+Future<Post> fetchPost() async {
+  final response =
+      await http.get('http://diogo98s.pythonanywhere.com/api/v1/events/');
+
+  if (response.statusCode == 200) {
+    print("Passed");
+    print(response.body.length);
+    // If the call to the server was successful, parse the JSON.
+    return Post.fromJson(json.decode(response.body)[0]);
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load post');
+  }
+}
+
+class Post {
+  final String name;
+  final String description;
+  final String start_time;
+  final String end_time;
+  final String updates;
+
+  Post(
+      {this.name,
+      this.description,
+      this.start_time,
+      this.end_time,
+      this.updates});
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      name: json['name'],
+      description: json['description'],
+      start_time: json['start_time'],
+      end_time: json['end_time'],
+      updates: json['updates'],
+    );
+  }
+}
 
 class AllEventsPage extends StatefulWidget {
   AllEventsPage({Key key}) : super(key: key);
@@ -10,6 +53,13 @@ class _AllEventsPageState extends State<AllEventsPage> {
   // Color _iconColor = Colors.black38;
   var cores = {};
   var isEnabled = {};
+
+  Future<Post> post;
+  @override
+  void initState() {
+    super.initState();
+    post = fetchPost();
+  }
 
   Widget _buildList() => ListView(
         // this is from backend events
@@ -27,11 +77,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
               'Learn how to programe in Js, just for begginers.',
               '11:00\n12:00',
               4),
-          _tile(
-              'Do you need a router?',
-              'Workshop about configure a router by Cisco ',
-              '12:00\n13:00',
-              5),
+          _tile('Do you need a router?',
+              'Workshop about configure a router by Cisco ', '12:00\n13:00', 5),
           Divider(),
           _tile('Lunch Time', 'Meet in coffe-lunch', '', 6),
           Divider(),
@@ -93,9 +140,22 @@ class _AllEventsPageState extends State<AllEventsPage> {
           ),
           title: Text('All events'),
         ),
-        body: TabBarView(
-          children: [_buildList(), _buildList(), _buildList(), _buildList()],
+        body: Center(
+          child: FutureBuilder<Post>(
+            future: post,
+            builder: (context, snapshot) {
+              print(post.toString());
+              if (snapshot.hasData) {
+                return Text(snapshot.data.name);
+              }
+              // By default, show a loading spinner.
+              return CircularProgressIndicator();
+            },
+          ),
         ),
+        //body: TabBarView(
+        //children: [_buildList(), _buildList(), _buildList(), _buildList()],
+        //),
       ),
     );
   }
