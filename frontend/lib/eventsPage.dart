@@ -7,12 +7,33 @@ class EventsPage extends StatefulWidget {
   }
 }
 
-class Event {
-  static int startTime;
-  static int endTime;
-  static String description;
-  static String room;
+class EventObject {
+  final double startTime;
+  final double endTime;
+  final int family;
+  final int index;
+  final String description;
+  final String room;
+
+  EventObject(this.startTime, this.endTime, this.family, this.index,
+      this.description, this.room);
 }
+
+class Event {
+  final double startTime;
+  final double endTime;
+  final String description;
+  final String room;
+
+  Event(this.startTime, this.endTime, this.description, this.room);
+}
+
+List<Event> alo = [
+  new Event(1, 2, 'Lets do a Talk', 'Sala 666'),
+  new Event(1.5, 3, 'jsjsj', 'Sala 666'),
+  new Event(2, 4, 'What', 'Sala 666'),
+  new Event(5, 6, 'What', 'Sala 666')
+];
 
 class HeaderWidget extends StatelessWidget {
   final String text;
@@ -54,49 +75,6 @@ bool four = false;
 bool five = false;
 bool six = false;
 
-Widget getEvent(double stackWidth, double startTime, double endTime, int index,
-    int family, String text) {
-  return new Positioned(
-      top: startTime,
-      right: index * (stackWidth / family),
-      width: stackWidth / family,
-      height: endTime - startTime ,
-      child: Column(
-        children: <Widget>[
-          Expanded(
-              flex: 3,
-              child: Container(
-                  padding: EdgeInsets.fromLTRB(1, 1, 1, 0),
-                  margin: EdgeInsets.fromLTRB(0, 0, 3, 0),
-
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    border: Border(
-                      top: BorderSide(color: Colors.black, width: 1),
-                      right: BorderSide(color: Colors.black, width: 1),
-                      left: BorderSide(color: Colors.black, width: 1),
-                    ),
-                  ),
-                  width: stackWidth,
-                  child: Text(text, textAlign: TextAlign.center))),
-          Expanded(
-              flex: 5,
-              child: Container(
-                padding: EdgeInsets.fromLTRB(1, 0, 1, 1),
-                  margin: EdgeInsets.fromLTRB(0, 0, 3, 0),
-
-                decoration: BoxDecoration(
-                  color: Colors.blue[200],
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                ),
-              )),
-        ],
-      ));
-}
-
 Widget getTextWidgets(List<String> strings, double height) {
   return new Column(
       children: strings
@@ -118,37 +96,51 @@ Widget getTextWidgets(List<String> strings, double height) {
           .toList());
 }
 
-Widget getEvents(List<String> strings) {
-  return new Column(
-      children: strings
-          .map((item) => new Flexible(
-              child: Container(
-                  margin: EdgeInsets.all(20),
-                  height: 100,
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    color: Colors.blue[300],
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                          child: Text(
-                        item,
-                        textAlign: TextAlign.center,
-                      )),
-                      Expanded(
-                        child: Container(
-                          color: Colors.blue[100],
-                          height: 30,
-                          width: 1000,
-                        ),
-                      )
-                    ],
-                  ))))
-          .toList());
-}
-
 class EventsPageState extends State<StatefulWidget> {
+  Widget createEvent(double stackWidth, double startTime, double endTime,
+      int index, int family, String text, String room) {
+    return new Positioned(
+        top: startTime,
+        left: index * (stackWidth / family),
+        width: stackWidth / family,
+        height: endTime - startTime,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+                flex: 3,
+                child: Container(
+                    padding: EdgeInsets.fromLTRB(1, 1, 1, 0),
+                    margin: EdgeInsets.fromLTRB(3, 0, 3, 0),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      border: Border(
+                        top: BorderSide(color: Colors.black, width: 1),
+                        right: BorderSide(color: Colors.black, width: 1),
+                        left: BorderSide(color: Colors.black, width: 1),
+                      ),
+                    ),
+                    width: stackWidth,
+                    child: Text(text, textAlign: TextAlign.center))),
+            Expanded(
+                flex: 5,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(1, 0, 1, 1),
+                  margin: EdgeInsets.fromLTRB(3, 0, 3, 0),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[200],
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(room, textAlign: TextAlign.center),
+                  ),
+                )),
+          ],
+        ));
+  }
+
   void setThree() {
     setState(() {
       three = true;
@@ -210,7 +202,8 @@ class EventsPageState extends State<StatefulWidget> {
     '21h00',
     '22h00',
     '23h00',
-    '24h00'];
+    '24h00'
+  ];
 
   final List<String> events = <String>[
     'JavaScript Workshop - B323',
@@ -223,6 +216,61 @@ class EventsPageState extends State<StatefulWidget> {
     double viewHeight = MediaQuery.of(context).size.height;
     double stackWidth = (6 / 7) * viewWidth;
     double hourHeight = (viewHeight / 6) - 3;
+
+    List<List<Event>> makeFamilies(List<Event> allEvents) {
+      List<List<Event>> eventsList = [[]];
+      bool isFamily = false;
+      double startTime;
+      double maxEndTime;
+      int x = 0;
+      int y = -1;
+      for (int i = 0; i < allEvents.length; i++) {
+        Event elem = allEvents[i];
+
+        if (isFamily) {
+          if (elem.startTime >= startTime && elem.startTime <= maxEndTime) {
+            ++x;
+            if (elem.endTime > maxEndTime) {
+              maxEndTime = elem.endTime;
+            }
+            eventsList[y].add(elem);
+          } else {
+            isFamily = false;
+          }
+        }
+        if (!isFamily) {
+          List<Event> lista = [];
+          x = 0;
+          y++;
+          maxEndTime = elem.endTime;
+          startTime = elem.startTime;
+          eventsList.add(lista);
+          eventsList[y].add(elem);
+          isFamily = true;
+        }
+      }
+      return eventsList;
+    }
+
+    List<Positioned> getEvents(List<Event> events) {
+      List<Positioned> widgetsEvents = [];
+      List<List<Event>> listOfLists = makeFamilies(events);
+      for (int i = 0; i < listOfLists.length; i++) {
+        for (int j = 0; j < listOfLists[i].length; j++) {
+          Event event = listOfLists[i][j];
+          Positioned widgetEvent = createEvent(
+              stackWidth,
+              hourHeight * event.startTime,
+              hourHeight * event.endTime,
+              j,
+              listOfLists[i].length,
+              event.description,
+              event.room);
+          widgetsEvents.add(widgetEvent);
+        }
+      }
+      return widgetsEvents;
+    }
 
     return Container(
       child: Stack(
@@ -238,13 +286,7 @@ class EventsPageState extends State<StatefulWidget> {
                       Expanded(
                           flex: 13,
                           child: Stack(
-                            children: <Widget>[
-                              getEvent(stackWidth, 0, hourHeight, 0, 1, 'JavaScript Workshop - B323'),
-                              getEvent(stackWidth, hourHeight, 2 * hourHeight, 0,
-                                  2, '3D Printing Talk - B002'),
-                              getEvent(stackWidth, hourHeight, 2 * hourHeight, 1,
-                                  2, 'Ali')
-                            ],
+                            children: getEvents(alo),
                           ))
                     ])),
               )),
