@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _children = [
     ProfilePage(),
     MapPage(),
-    EventsPage(),
+    //EventsPage(),
     AllEventsPage(),
   ];
 
@@ -72,7 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: _children[_currentIndex],
-      
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
         type: BottomNavigationBarType
@@ -95,7 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: new Icon(Icons.calendar_today),
             title: new Text('Events'),
           ),
-          
         ],
       ),
     );
