@@ -24,7 +24,7 @@ class TagSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Tag
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class EventSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Event
-        fields = ['name', 'description', 'start_time', 'end_time', 'updates']
+        fields = ['id', 'name', 'description', 'start_time', 'end_time', 'updates']
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -42,7 +42,7 @@ class NotificationSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Notification
-        fields = ['name', 'description']
+        fields = ['id', 'name', 'description']
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -53,7 +53,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ['name', 'place_type', 'location']
+        fields = ['id', 'name', 'place_type', 'location']
 
 
 class BeaconSerializer(serializers.ModelSerializer):
