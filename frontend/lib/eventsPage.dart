@@ -54,18 +54,61 @@ bool four = false;
 bool five = false;
 bool six = false;
 
-Widget getTextWidgets(List<String> strings) {
+Widget getEvent(double stackWidth, double startTime, double endTime, int index,
+    int family, String text) {
+  return new Positioned(
+      top: startTime,
+      right: index * (stackWidth / family),
+      width: stackWidth / family,
+      height: endTime - startTime ,
+      child: Column(
+        children: <Widget>[
+          Expanded(
+              flex: 3,
+              child: Container(
+                  padding: EdgeInsets.fromLTRB(1, 1, 1, 0),
+                  margin: EdgeInsets.fromLTRB(0, 0, 3, 0),
+
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    border: Border(
+                      top: BorderSide(color: Colors.black, width: 1),
+                      right: BorderSide(color: Colors.black, width: 1),
+                      left: BorderSide(color: Colors.black, width: 1),
+                    ),
+                  ),
+                  width: stackWidth,
+                  child: Text(text, textAlign: TextAlign.center))),
+          Expanded(
+              flex: 5,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(1, 0, 1, 1),
+                  margin: EdgeInsets.fromLTRB(0, 0, 3, 0),
+
+                decoration: BoxDecoration(
+                  color: Colors.blue[200],
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                ),
+              )),
+        ],
+      ));
+}
+
+Widget getTextWidgets(List<String> strings, double height) {
   return new Column(
       children: strings
           .map((item) => new Expanded(
               child: Container(
-                  height: 100,
+                  height: height,
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     border: Border(
-                      right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
-                      bottom:
-                          BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+                      top: BorderSide(color: Colors.black, width: 1),
+                      right: BorderSide(color: Colors.black, width: 1),
+                      left: BorderSide(color: Colors.black, width: 1),
                     ),
                   ),
                   child: Text(
@@ -78,11 +121,10 @@ Widget getTextWidgets(List<String> strings) {
 Widget getEvents(List<String> strings) {
   return new Column(
       children: strings
-          .map((item) => new Expanded(
+          .map((item) => new Flexible(
               child: Container(
                   margin: EdgeInsets.all(20),
                   height: 100,
-
                   decoration: BoxDecoration(
                     border: Border.all(),
                     color: Colors.blue[300],
@@ -144,14 +186,31 @@ class EventsPageState extends State<StatefulWidget> {
   }
 
   final List<String> hours = <String>[
+    '00h00',
+    '01h00',
+    '02h00',
+    '03h00',
+    '04h00',
+    '05h00',
+    '06h00',
+    '07h00',
     '08h00',
+    '09h00',
     '10h00',
+    '11h00',
     '12h00',
+    '13h00',
     '14h00',
+    '15h00',
     '16h00',
+    '17h00',
     '18h00',
-    '20h00'
-  ];
+    '19h00',
+    '20h00',
+    '21h00',
+    '22h00',
+    '23h00',
+    '24h00'];
 
   final List<String> events = <String>[
     'JavaScript Workshop - B323',
@@ -160,21 +219,38 @@ class EventsPageState extends State<StatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double viewWidth = MediaQuery.of(context).size.width;
+    double viewHeight = MediaQuery.of(context).size.height;
+    double stackWidth = (6 / 7) * viewWidth;
+    double hourHeight = (viewHeight / 6) - 3;
+
     return Container(
       child: Stack(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.fromLTRB(0, 90, 0, 0),
-            child: 
-          SingleChildScrollView(
-            child: Container(height:600,child:Row(children: <Widget>[
-              Expanded(flex:1,child: getTextWidgets(hours)),
-              Expanded(flex:4,child: getEvents(events))
-            ])),
-          )),
+              padding: EdgeInsets.fromLTRB(0, (viewHeight / 8), 0, 0),
+              child: SingleChildScrollView(
+                child: Container(
+                    height: viewHeight * 4,
+                    child: Row(children: <Widget>[
+                      Expanded(
+                          flex: 2, child: getTextWidgets(hours, hourHeight)),
+                      Expanded(
+                          flex: 13,
+                          child: Stack(
+                            children: <Widget>[
+                              getEvent(stackWidth, 0, hourHeight, 0, 1, 'JavaScript Workshop - B323'),
+                              getEvent(stackWidth, hourHeight, 2 * hourHeight, 0,
+                                  2, '3D Printing Talk - B002'),
+                              getEvent(stackWidth, hourHeight, 2 * hourHeight, 1,
+                                  2, 'Ali')
+                            ],
+                          ))
+                    ])),
+              )),
           Positioned(
             child: new Container(
-              height: MediaQuery.of(context).size.height * 0.15,
+              height: viewHeight / 8,
               decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius:
