@@ -114,6 +114,25 @@ class MapController extends State<MapPage> {
     var data = json.decode(res.body) as List;
 
     places = data.map<Place>((json) => Place.fromJSON(json)).toList();
+
+    final edges = await http.get(Constants.API_URL + '/api/v1/edges/');
+    var edgeData = json.decode(edges.body) as List;
+
+    //Go through every edge and get the origin from places and add the des
+    for(int i = 0; i < edgeData.length; i++) {
+      Map<String, dynamic> json = edgeData[i];
+      String s1 = json['vertex1']['name'];
+      String s2 = json['vertex2']['name'];
+
+      Place p1, p2;
+      for(int j = 0; j < places.length; j++) {
+        if(places[j].name == s1) p1 = places[j];
+        else if(places[j].name == s2) p2= places[j];
+      }
+
+      p1.addAdj(p2);
+      p2.addAdj(p1);
+    }
   }
 
   Future<List<Place>> search(String searchStr) async {
@@ -187,7 +206,7 @@ class MapController extends State<MapPage> {
                                                   backgroundColor: Color.fromRGBO(255, 255, 255, .95),
                                                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
                                                   padding: EdgeInsets.all(5.0),
-),
+                                              ),
                   ),
                 ),
               ),
@@ -255,18 +274,21 @@ class MapController extends State<MapPage> {
     }
   }
 
-  void calculateRoute(Place place) {
-    //STEPS:
-    // start on joint closest to user on the same floor
-    // get a list of places starting on that joint until destination
-    //add all polylines connecting all joints in the list
+  void calculateRoute(Place finish) {
+    Place start = Place.getNearestJoint(places, _user);
+    List<Place> path = Place.getRoute(start, finish);
 
     setState(() {
       routeSet.clear();
 
-      Polyline route = Polyline(polylineId: PolylineId("route"), points: [LatLng(_user.latitude, _user.longitude), LatLng(place.latitude, place.longitude)]);
+      for(int i = 0; i < path.length - 1; i++) {
+        Place place1 = path[i];
+        Place place2 = path[i + 1];
 
-      routeSet.add(route);
+        Polyline route = Polyline(polylineId: PolylineId(i.toString()), points: [LatLng(place1.latitude, place1.longitude), LatLng(place2.latitude, place2.longitude)]);
+        routeSet.add(route);
+      }
+
     });
   }
 
