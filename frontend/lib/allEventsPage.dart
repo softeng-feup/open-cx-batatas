@@ -63,16 +63,19 @@ class _AllEventsPageState extends State<AllEventsPage> {
   var isEnabled = {};
 
   List<Post> posts = new List();
-  List<ListTile> list_23 = new List();
-  List<ListTile> list_24 = new List();
-  List<ListTile> list_25 = new List();
-  List<ListTile> list_26 = new List();
+  List<ListTile> list_23;
+  List<ListTile> list_24;
+  List<ListTile> list_25;
+  List<ListTile> list_26;
 
   @override
   void initState() {
     super.initState();
+    list_23 = new List();
+    list_24 = new List();
+    list_25 = new List();
+    list_26 = new List();
     fetchPost();
-    //_buildDayList();
   }
 
   void fetchPost() async {
@@ -85,7 +88,6 @@ class _AllEventsPageState extends State<AllEventsPage> {
       for (var i = 0; i < sizeOf_post; i++) {
         posts.add(Post.fromJson(json.decode(response.body)[i]));
       }
-      print(posts);
       _buildDayList();
     } else {
       // If that call was not successful, throw an error.
@@ -111,19 +113,28 @@ class _AllEventsPageState extends State<AllEventsPage> {
 
       if (dateParsedS.day == 23) {
         var newTile = _tile(n, d, time_conden, id);
-        list_23.add(newTile);
+        setState(() {
+          list_23.add(newTile);
+          list_23 = List.from(list_23);
+        });
       }
       if (dateParsedS.day == 24) {
         var newTile = _tile(n, d, time_conden, id);
-        list_24.add(newTile);
+        setState(() {
+          list_24.add(newTile);
+        });
       }
       if (dateParsedS.day == 25) {
         var newTile = _tile(n, d, time_conden, id);
-        list_25.add(newTile);
+        setState(() {
+          list_25.add(newTile);
+        });
       }
       if (dateParsedS.day == 26) {
         var newTile = _tile(n, d, time_conden, id);
-        list_26.add(newTile);
+        setState(() {
+          list_26.add(newTile);
+        });
       }
     }
   }
@@ -150,15 +161,21 @@ class _AllEventsPageState extends State<AllEventsPage> {
       trailing: IconButton(
         icon: Icon(Icons.calendar_today, color: cores[myKey]),
         onPressed: () {
+          print('cor em ' + myKey.toString());
+          print(cores[myKey]);
           print('fui carregado em ' + myKey.toString());
           setState(() {
             if (isEnabled.containsKey(myKey)) {
               cores.remove(myKey);
+              cores[myKey] = defaultColor;
               isEnabled.remove(myKey);
             } else {
               isEnabled[myKey] = true;
               cores[myKey] = Colors.black;
             }
+
+            cores = Map.from(cores);
+            list_23 = List.from(list_23);
           });
         },
       ),
@@ -184,10 +201,10 @@ class _AllEventsPageState extends State<AllEventsPage> {
         ),
         body: TabBarView(
           children: [
-            _buildList(this.list_23),
-            _buildList(this.list_24),
-            _buildList(this.list_25),
-            _buildList(this.list_26)
+            _buildList(list_23),
+            _buildList(list_24),
+            _buildList(list_25),
+            _buildList(list_26)
           ],
         ),
       ),
