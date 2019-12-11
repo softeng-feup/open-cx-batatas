@@ -3,22 +3,29 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-Future<Post> fetchPost() async {
+/*Future<Post> fetchPost() async {
   final response =
       await http.get('http://diogo98s.pythonanywhere.com/api/v1/events/');
 
   if (response.statusCode == 200) {
-    print("Passed");
-    print(response.body.length);
     // If the call to the server was successful, parse the JSON.
     return Post.fromJson(json.decode(response.body)[0]);
   } else {
     // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
   }
-}
+}*/
+
+//List<_tile> fazTiles() {
+
+//}
+
+//Widget _buildCenas() => ListView(
+//children: buildPosts(posts),
+//)
 
 class Post {
+  final int id;
   final String name;
   final String description;
   final String start_time;
@@ -26,7 +33,8 @@ class Post {
   final String updates;
 
   Post(
-      {this.name,
+      {this.id,
+      this.name,
       this.description,
       this.start_time,
       this.end_time,
@@ -34,6 +42,7 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
+      id: json['id'],
       name: json['name'],
       description: json['description'],
       start_time: json['start_time'],
@@ -50,45 +59,78 @@ class AllEventsPage extends StatefulWidget {
 }
 
 class _AllEventsPageState extends State<AllEventsPage> {
-  // Color _iconColor = Colors.black38;
   var cores = {};
   var isEnabled = {};
 
-  Future<Post> post;
+  List<Post> posts = new List();
+  List<ListTile> list_23 = new List();
+  List<ListTile> list_24 = new List();
+  List<ListTile> list_25 = new List();
+  List<ListTile> list_26 = new List();
+
   @override
   void initState() {
     super.initState();
-    post = fetchPost();
+    fetchPost();
+    //_buildDayList();
   }
 
-  Widget _buildList() => ListView(
-        // this is from backend events
-        children: [
-          _tile(
-              'Registration',
-              'Register to receive your accredition at this week.',
-              '09:00\n10:00',
-              1),
-          _tile('Big Data Today', 'An prespective with Zé Manel',
-              '10:00\n10:20', 2),
-          _tile('The end of Blockchain', 'CEO from ABBT', '10:20\n10:50', 3),
-          _tile(
-              'JavaScript Workshop',
-              'Learn how to programe in Js, just for begginers.',
-              '11:00\n12:00',
-              4),
-          _tile('Do you need a router?',
-              'Workshop about configure a router by Cisco ', '12:00\n13:00', 5),
-          Divider(),
-          _tile('Lunch Time', 'Meet in coffe-lunch', '', 6),
-          Divider(),
-          _tile('The Future Today', 'CTO from Airbnb', '14:00\n14:40', 7),
-          _tile('Robot from the past', 'CEO from IBM', '14:40\n15:00', 8),
-          _tile('Build a robot', 'Learn how to build a robot, IBM',
-              '15:00\n16:20', 9),
-          _tile('React Native', 'For begginers by Natixis', '16:00\n17:30', 10),
-        ],
-      );
+  void fetchPost() async {
+    final response =
+        await http.get('http://diogo98s.pythonanywhere.com/api/v1/events/');
+
+    if (response.statusCode == 200) {
+      var sizeOf_post = jsonDecode(response.body).length;
+      // If the call to the server was successful, parse the JSON.
+      for (var i = 0; i < sizeOf_post; i++) {
+        posts.add(Post.fromJson(json.decode(response.body)[i]));
+      }
+      print(posts);
+      _buildDayList();
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  // Find days and spare events by day function
+  void _buildDayList() {
+    for (var i = 0; i < posts.length; i++) {
+      var id = posts[i].id;
+      var dateParsedS = DateTime.parse(posts[i].start_time);
+      var dateParsedE = DateTime.parse(posts[i].end_time);
+      var n = posts[i].name;
+      var d = posts[i].description;
+      var time_conden = dateParsedS.hour.toString() +
+          ":" +
+          dateParsedS.minute.toString() +
+          "\n" +
+          dateParsedE.hour.toString() +
+          ":" +
+          dateParsedE.minute.toString();
+
+      if (dateParsedS.day == 23) {
+        var newTile = _tile(n, d, time_conden, id);
+        list_23.add(newTile);
+      }
+      if (dateParsedS.day == 24) {
+        var newTile = _tile(n, d, time_conden, id);
+        list_24.add(newTile);
+      }
+      if (dateParsedS.day == 25) {
+        var newTile = _tile(n, d, time_conden, id);
+        list_25.add(newTile);
+      }
+      if (dateParsedS.day == 26) {
+        var newTile = _tile(n, d, time_conden, id);
+        list_26.add(newTile);
+      }
+    }
+  }
+
+  Widget _buildList(List<ListTile> dayList) => ListView(
+      // this is from backend events
+      children: dayList);
 
   ListTile _tile(String title, String subtitle, String time, int myKey) {
     var defaultColor = Colors.black38;
@@ -140,22 +182,14 @@ class _AllEventsPageState extends State<AllEventsPage> {
           ),
           title: Text('All events'),
         ),
-        body: Center(
-          child: FutureBuilder<Post>(
-            future: post,
-            builder: (context, snapshot) {
-              print(post.toString());
-              if (snapshot.hasData) {
-                return Text(snapshot.data.name);
-              }
-              // By default, show a loading spinner.
-              return CircularProgressIndicator();
-            },
-          ),
+        body: TabBarView(
+          children: [
+            _buildList(this.list_23),
+            _buildList(this.list_24),
+            _buildList(this.list_25),
+            _buildList(this.list_26)
+          ],
         ),
-        //body: TabBarView(
-        //children: [_buildList(), _buildList(), _buildList(), _buildList()],
-        //),
       ),
     );
   }

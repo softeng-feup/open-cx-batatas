@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     MapPage(),
-    EventsPage(),
+    //EventsPage(),
     AllEventsPage(),
     ProfilePage(),
   ];
@@ -148,7 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: new Icon(Icons.calendar_today),
             title: new Text('Events'),
           ),
-          
         ],
       ),
     );
