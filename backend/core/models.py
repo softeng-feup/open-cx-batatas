@@ -125,6 +125,7 @@ class Place(models.Model):
         ('ROOM', _('Room')),
         ('COFFEE', _('Coffee')),
         ('STAIRS', _('Stairs')),
+        ('JOINT', _('Joint')),
         ('', _('Undefined')),
     )
     place_type = models.CharField(_("type"), max_length=10, choices=PLACE_TYPES,
