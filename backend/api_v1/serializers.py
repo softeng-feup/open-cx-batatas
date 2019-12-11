@@ -56,6 +56,18 @@ class PlaceSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'place_type', 'location']
 
 
+class MapEdgeSerializer(serializers.ModelSerializer):
+    """
+    MapEdge serializer.
+    """
+    vertex1 = PlaceSerializer()
+    vertex2 = PlaceSerializer()
+    
+    class Meta:
+        model = Tag
+        fields = ['id', 'vertex1', 'vertex2']
+        
+
 class BeaconSerializer(serializers.ModelSerializer):
     """
     Beacon serializer.
