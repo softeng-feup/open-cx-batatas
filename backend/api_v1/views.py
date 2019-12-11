@@ -4,10 +4,11 @@ Views for api_v1.
 from rest_framework import generics, mixins
 from core.models import Location, Tag,\
                         Notification, Place,\
-                        Event, Beacon
+                        Event, Beacon, MapEdge
 from .serializers import LocationSerializer, TagSerializer,\
                          EventSerializer, NotificationSerializer,\
-                         PlaceSerializer, BeaconSerializer
+                         PlaceSerializer, BeaconSerializer,\
+                         MapEdgeSerializer
 
 class LocationList(mixins.ListModelMixin,
                    mixins.CreateModelMixin,
@@ -84,7 +85,7 @@ class NotificationList(mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 class PlaceList(mixins.ListModelMixin,
-               generics.GenericAPIView):
+                generics.GenericAPIView):
     """
     Lists all places.
     """
@@ -96,6 +97,22 @@ class PlaceList(mixins.ListModelMixin,
         Handler for GET requests.
 
         Lists all the places.
+        """
+        return self.list(request, *args, **kwargs)
+
+class MapEdgeList(mixins.ListModelMixin,
+                  generics.GenericAPIView):
+    """
+    Lists all map edges.
+    """
+    queryset = MapEdge.objects.all()
+    serializer_class = MapEdgeSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handler for GET requests.
+
+        Lists all the edges.
         """
         return self.list(request, *args, **kwargs)
 
