@@ -136,6 +136,15 @@ class Place(models.Model):
         return '{}'.format(self.name)
 
 
+class MapEdge(models.Model):
+    """
+    Map edge model.
+    Used for building the direction graph.
+    """
+    vertex1 = models.ForeignKey(Place, on_delete=models.CASCADE)
+    vertex2 = models.ForeignKey(Place, on_delete=models.CASCADE)
+
+    
 class Event(models.Model):
     """
     Event model.
