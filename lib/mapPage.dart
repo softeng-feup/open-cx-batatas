@@ -281,11 +281,14 @@ class MapController extends State<MapPage> {
     setState(() {
       routeSet.clear();
 
+      Polyline r = Polyline(polylineId: PolylineId("start"), points: [LatLng(_user.latitude, _user.longitude), LatLng(path[0].latitude, path[0].longitude)], color: Colors.orange, zIndex: 0);
+      routeSet.add(r);
+
       for(int i = 0; i < path.length - 1; i++) {
         Place place1 = path[i];
         Place place2 = path[i + 1];
 
-        Polyline route = Polyline(polylineId: PolylineId(i.toString()), points: [LatLng(place1.latitude, place1.longitude), LatLng(place2.latitude, place2.longitude)]);
+        Polyline route = Polyline(polylineId: PolylineId(i.toString()), points: [LatLng(place1.latitude, place1.longitude), LatLng(place2.latitude, place2.longitude)], color: Colors.orange, zIndex: 0);
         routeSet.add(route);
       }
 
@@ -316,6 +319,7 @@ class MapController extends State<MapPage> {
         fillColor: Colors.blue,
         strokeColor: Colors.deepOrange,
         strokeWidth: 2,
+        zIndex: 1,
       );
 
       circles.add(circle);
