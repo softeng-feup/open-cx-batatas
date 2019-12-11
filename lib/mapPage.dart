@@ -12,6 +12,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'constants.dart' as Constants;
 
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rx_ble/rx_ble.dart';
+import 'package:loading/loading.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+
 
 class MapPage extends StatefulWidget {
   final User user = new User(41.177764, -8.596490);
@@ -54,9 +59,19 @@ class MapController extends State<MapPage> {
 
   List<Place> places = new List<Place>();
 
+  /*
+     0 - loading
+     1 - no location permission
+     2 - ready
+  */
+  int currentState;
+
   @override
   void initState() {
     super.initState();
+    currentState = 0;
+
+    checkLocationPermission();
 
     fetchPlaces();
     // TODO: Start scanning of BLE devices
@@ -64,6 +79,27 @@ class MapController extends State<MapPage> {
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
     });
+  }
+
+  void checkLocationPermission() async {
+    final PermissionStatus locationPerm = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.location);
+    bool enabled = (locationPerm == PermissionStatus.granted);
+
+    if (!enabled) {
+      setState(() {
+        currentState = 1;
+      });
+    } else {
+      setState(() {
+        currentState = 2;
+      });
+    }
+  }
+
+  void requestLocationPermission() async {
+    await RxBle.requestAccess();
+    checkLocationPermission();
   }
 
   @override
@@ -89,81 +125,136 @@ class MapController extends State<MapPage> {
     return places.where((place) => place.name.toLowerCase().contains(searchStr)).toList();
   }
 
+  Container getMapContainer() {
+    return Container(
+        alignment: Alignment.center,
+        child: Stack(
+            children: <Widget>[
+              GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: _feupPosition,
+                  minMaxZoomPreference: zoomPreference,
+                  myLocationEnabled: true,
+                  indoorViewEnabled: true,
+                  compassEnabled: false,
+                  myLocationButtonEnabled: true,
+                  cameraTargetBounds: cameraBounds,
+                  onMapCreated: (GoogleMapController controller) {
+                    controller.setMapStyle(_mapStyle);
+                    _controller.complete(controller);
+                  },
+                  circles: circles,
+                  markers: markerSet,
+              ),
+              Center(
+                  heightFactor: 1,
+                  child: ListTileTheme(
+                      style: ListTileStyle.list,
+                      iconColor: Colors.blue,
+                      selectedColor: Colors.red,
+                      child: Container (
+                          width: 360,
+                          height: 300,
+                          child: SearchBar(
+                              iconActiveColor: Colors.blue,
+                              hintText: "Search location here",
+                              hintStyle: TextStyle(
+                                  color: Color.fromRGBO(212, 212, 212, 1),
+                              ),
+                              textStyle: TextStyle(
+                                  color: Colors.black,
+                              ),
+                              placeHolder: SizedBox.shrink(),
+                              loader: SizedBox.shrink(),
+                              mainAxisSpacing: 10,
+                              searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
+                              listPadding: EdgeInsets.symmetric(horizontal: 10),
+                              onSearch: search,
+                              onItemFound: (Place place, int index) {
+                                return Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.fromBorderSide(BorderSide(color: Colors.blue)),
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                    ),
+                                    child: ListTile(
+                                        title: Text(place.type + place.name),
+                                        subtitle: Text("Floor: " + place.floor.toString()),
+                                        onTap: () {this.markLocation(place);},
+                                        trailing: Icon(Icons.location_on, color: Colors.deepOrange),
+                                    ),
+                                );
+                              },
+                              searchBarStyle: SearchBarStyle(
+                                                  backgroundColor: Color.fromRGBO(255, 255, 255, .95),
+                                                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                                  padding: EdgeInsets.all(5.0),
+                                              ),
+                              ),
+                              ),
+                              ),
+                              ),
+                              ],
+                              )
+                                  );
+  }
+
+  Container getLoadingContainer() {
+    return Container(
+        color: Colors.white,
+        child: Center(
+            child: Loading(indicator: BallPulseIndicator(), size: 100.0, color: Colors.lightBlue),
+        ),
+    );
+  }
+
+  Container getRequestLocationContainer() {
+    return Container(
+        color: Colors.white,
+        child: Center(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(FontAwesomeIcons.bluetoothB, size: 60, color: Colors.lightBlue), 
+                  SizedBox(height: 20),
+                  Text(
+                      Constants.locationMissingStr,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  ButtonTheme(
+                      minWidth: 150.0,
+                      height: 38.0,
+                      buttonColor: Colors.grey[300],
+                      child: RaisedButton(
+                          onPressed: requestLocationPermission,
+                          child: const Text(
+                              'Grant permission',
+                              style: TextStyle(fontSize: 16)
+                          ),
+                      ),
+                  )
+                ]
+            )
+        ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) { //"draw" method
+  Widget build(BuildContext context) {
     //TODO Preciso de ligar a localização retornada pelos beacons ao user
     this.updateUserLocation();
-    return Container(
-      alignment: Alignment.center,
-        child: Stack(
-          children: <Widget>[
-        GoogleMap(
-        mapType: MapType.normal,
-          initialCameraPosition: _feupPosition,
-          minMaxZoomPreference: zoomPreference,
-          myLocationEnabled: true,
-          indoorViewEnabled: true,
-          compassEnabled: false,
-          myLocationButtonEnabled: true,
-          cameraTargetBounds: cameraBounds,
-          onMapCreated: (GoogleMapController controller) {
-            controller.setMapStyle(_mapStyle);
-            _controller.complete(controller);
-          },
-          circles: circles,
-          markers: markerSet,
-        ),
-            Center(
-              heightFactor: 1,
-              child: ListTileTheme(
-                style: ListTileStyle.list,
-                iconColor: Colors.blue,
-                selectedColor: Colors.red,
-                child: Container (
-                  width: 360,
-                  height: 300,
-                  child: SearchBar(
-                    iconActiveColor: Colors.blue,
-                    hintText: "Search location here",
-                    hintStyle: TextStyle(
-                      color: Color.fromRGBO(212, 212, 212, 1),
-                    ),
-                    textStyle: TextStyle(
-                      color: Colors.black,
-                    ),
-                    placeHolder: SizedBox.shrink(),
-                    loader: SizedBox.shrink(),
-                    mainAxisSpacing: 10,
-                    searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
-                    listPadding: EdgeInsets.symmetric(horizontal: 10),
-                    onSearch: search,
-                    onItemFound: (Place place, int index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            border: Border.fromBorderSide(BorderSide(color: Colors.blue)),
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: ListTile(
-                            title: Text(place.type + place.name),
-                            subtitle: Text("Floor: " + place.floor.toString()),
-                            onTap: () {this.markLocation(place);},
-                            trailing: Icon(Icons.location_on, color: Colors.deepOrange),
-                          ),
-                        );
-                    },
-                    searchBarStyle: SearchBarStyle(
-                      backgroundColor: Color.fromRGBO(255, 255, 255, .95),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      padding: EdgeInsets.all(5.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        )
-    );
+
+    switch (currentState) {
+      case 0:
+        return getLoadingContainer();
+      case 1:
+        return getRequestLocationContainer();
+      case 2:
+        return getMapContainer();
+    }
   }
 
   void markLocation(Place place) async {
