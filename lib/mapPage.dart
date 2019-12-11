@@ -9,7 +9,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'constants.dart' as Constants;
 
 import 'package:permission_handler/permission_handler.dart';
@@ -56,8 +55,10 @@ class MapController extends State<MapPage> {
   Set<Circle> circles = new Set<Circle>();
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Set<Marker> markerSet = new Set<Marker>();
+  Set<Polyline> routeSet = new Set<Polyline>();
 
   List<Place> places = new List<Place>();
+  SearchBarController _searchBarController = new SearchBarController();
 
   /*
      0 - loading
@@ -116,13 +117,7 @@ class MapController extends State<MapPage> {
   }
 
   Future<List<Place>> search(String searchStr) async {
-    // Steps:
-    // 1- create the JSON serializable classes CHECK
-    // 2- use the parser to put everything into classes CHECK
-    // 3- create a list for all the rooms (later also allow events) CHECK
-    // 4- create a "search engine" to get the adequate results from the list CHECK
-
-    return places.where((place) => place.name.toLowerCase().contains(searchStr)).toList();
+    return places.where((place) => place.name.toLowerCase().contains(searchStr.toLowerCase()) && place is Room).toList();
   }
 
   Container getMapContainer() {
@@ -145,6 +140,8 @@ class MapController extends State<MapPage> {
                   },
                   circles: circles,
                   markers: markerSet,
+                  polylines: routeSet,
+                  mapToolbarEnabled: true,
               ),
               Center(
                   heightFactor: 1,
@@ -156,6 +153,7 @@ class MapController extends State<MapPage> {
                           width: 360,
                           height: 300,
                           child: SearchBar(
+                              //searchBarController: _searchBarController,
                               iconActiveColor: Colors.blue,
                               hintText: "Search location here",
                               hintStyle: TextStyle(
@@ -189,14 +187,14 @@ class MapController extends State<MapPage> {
                                                   backgroundColor: Color.fromRGBO(255, 255, 255, .95),
                                                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
                                                   padding: EdgeInsets.all(5.0),
-                                              ),
-                              ),
-                              ),
-                              ),
-                              ),
-                              ],
-                              )
-                                  );
+),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
+    );
   }
 
   Container getLoadingContainer() {
@@ -257,14 +255,32 @@ class MapController extends State<MapPage> {
     }
   }
 
+  void calculateRoute(Place place) {
+    //STEPS:
+    // start on joint closest to user on the same floor
+    // get a list of places starting on that joint until destination
+    //add all polylines connecting all joints in the list
+
+    setState(() {
+      routeSet.clear();
+
+      Polyline route = Polyline(polylineId: PolylineId("route"), points: [LatLng(_user.latitude, _user.longitude), LatLng(place.latitude, place.longitude)]);
+
+      routeSet.add(route);
+    });
+  }
+
   void markLocation(Place place) async {
     setState(() {
       markerSet.clear();
       Marker marker = Marker(position: LatLng(place.latitude, place.longitude), markerId: MarkerId("markedLocation"),
-                            icon: BitmapDescriptor.defaultMarkerWithHue(15));
-
+                            icon: BitmapDescriptor.defaultMarkerWithHue(15), onTap: () => this.calculateRoute(place));
       markerSet.add(marker);
     });
+
+    GoogleMapController controller = await _controller.future;
+    CameraUpdate camera = CameraUpdate.newLatLngZoom(LatLng(place.latitude, place.longitude), 80.0);
+    controller.animateCamera(camera);
   }
 
   void updateUserLocation() async {
