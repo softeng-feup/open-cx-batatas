@@ -1,0 +1,60 @@
+PODS:
+  - Flutter (1.0.0)
+  - google_maps_flutter (0.0.1):
+    - Flutter
+    - GoogleMaps
+  - GoogleMaps (3.6.0):
+    - GoogleMaps/Maps (= 3.6.0)
+  - GoogleMaps/Base (3.6.0)
+  - GoogleMaps/Maps (3.6.0):
+    - GoogleMaps/Base
+  - permission_handler (4.0.0):
+    - Flutter
+  - plugin_scaffold (0.0.1):
+    - Flutter
+  - rx_ble (0.0.1):
+    - Flutter
+    - plugin_scaffold
+    - RxBluetoothKit
+  - RxBluetoothKit (5.3.0):
+    - RxSwift (~> 5.0)
+  - RxSwift (5.0.1)
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - plugin_scaffold (from `.symlinks/plugins/plugin_scaffold/ios`)
+  - rx_ble (from `.symlinks/plugins/rx_ble/ios`)
+
+SPEC REPOS:
+  trunk:
+    - GoogleMaps
+    - RxBluetoothKit
+    - RxSwift
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  google_maps_flutter:
+    :path: ".symlinks/plugins/google_maps_flutter/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  plugin_scaffold:
+    :path: ".symlinks/plugins/plugin_scaffold/ios"
+  rx_ble:
+    :path: ".symlinks/plugins/rx_ble/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  google_maps_flutter: d0dd62f5a7d39bae61057eb9f52dd778d99c7c6c
+  GoogleMaps: 82f8fe307193bb4de6ef6bf9e88f1d624b718f9d
+  permission_handler: 0fb88b8a3c23e31e5de45b8f1bb8b7de28cf8941
+  plugin_scaffold: e7c52bc1cfb6e672959f798dfc9dea8dff55daeb
+  rx_ble: 9bdee742c5ac4a296155ffb8c536d29a7a369e9d
+  RxBluetoothKit: 0e781978e8a0df70ac3c611dcf44800b76c69f8a
+  RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
+
+PODFILE CHECKSUM: 2c26e2bafa90f053205a9e99ab1fdce88251e293
+
+COCOAPODS: 1.8.4

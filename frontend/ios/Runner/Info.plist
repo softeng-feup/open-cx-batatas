@@ -41,5 +41,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Our app uses bluetooth to find your location inside certified buildings</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Our app will only use your location to provide you directions inside FEUP</string>
 </dict>
 </plist>
