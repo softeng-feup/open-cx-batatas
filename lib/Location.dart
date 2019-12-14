@@ -104,6 +104,26 @@ class Joint extends Place {
 class Beacon {
   final String macAddress;
   final double latitude, longitude;
+  final int floor;
+  double distance = null;
+  DateTime lastSeen = null;
 
-  Beacon(this.macAddress, this.latitude, this.longitude);
+  Beacon(this.macAddress, this.latitude, this.longitude, this.floor);
+
+  factory Beacon.fromJSON(Map<String, dynamic> parsed){
+    if (parsed['is_active'] == true) {
+      return Beacon(parsed['mac_address'], parsed['location']['latitude'], parsed['location']['longitude'], parsed['location']['floor']);
+    } else {
+      return null;
+    }
+  }
+
+  void set updatedLastSeen(DateTime newLastSeen) {
+    lastSeen = newLastSeen;
+  }
+
+  void set updatedDistance(double newDistance) {
+    distance = newDistance;
+  }
+
 }

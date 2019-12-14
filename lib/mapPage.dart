@@ -15,6 +15,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rx_ble/rx_ble.dart';
 import 'package:loading/loading.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'dart:math';
+import 'package:maps_toolkit/maps_toolkit.dart' as mapToolkit;
+import 'map/fetchers.dart';
 
 
 class MapPage extends StatefulWidget {
@@ -57,7 +60,6 @@ class MapController extends State<MapPage> {
   Set<Marker> markerSet = new Set<Marker>();
   Set<Polyline> routeSet = new Set<Polyline>();
 
-  List<Place> places = new List<Place>();
   SearchBarController _searchBarController = new SearchBarController();
 
   /*
@@ -67,6 +69,23 @@ class MapController extends State<MapPage> {
   */
   int currentState;
 
+  /* Origin location for meters cartesian representation */
+  mapToolkit.LatLng REF_LOC = mapToolkit.LatLng(41.177958, -8.597342); // From A->B, top left corner
+
+  /* Will hold scan results */
+  final results = <String, ScanResult>{};
+
+  /* Will hold available beacons */
+  List<Beacon> beacons = new List<Beacon>();
+  List<Place> places = new List<Place>();
+
+
+  mapToolkit.LatLng b1;
+  mapToolkit.LatLng b2;
+  mapToolkit.LatLng b3;
+  mapToolkit.LatLng actualMe;
+  mapToolkit.LatLng calculatedMe;
+
   @override
   void initState() {
     super.initState();
@@ -74,12 +93,49 @@ class MapController extends State<MapPage> {
 
     checkLocationPermission();
 
-    fetchPlaces();
+    fetchAll();
+
     // TODO: Start scanning of BLE devices
 
     rootBundle.loadString('lib/assets/maps_style.json').then((string) {
       _mapStyle = string;
     });
+  }
+
+  /* Fetches required data from server */
+  void fetchAll() async {
+    fetchPlaces().then((p) => places = p);
+    fetchBeacons().then((b) => beacons = b);
+  }
+
+  /* Updates the user location */
+  void localizeUser() async {
+    // Get the three closest beacons -- from last 10s
+    beacons.sort((a, b) => a.distance.compareTo(b.distance));
+  }
+
+  /* Updates a Beacon's lastSeen and distance values */
+  void updateBeaconInformation(final scanResult) async {
+    var mp = -69;
+    var ambient = 2;
+    beacons.forEach((beacon) {
+      if (beacon.macAddress == scanResult.deviceId) {
+        beacon.updatedLastSeen = scanResult.time;
+        beacon.updatedDistance = pow(10, (mp - scanResult.rssi)/(10 * ambient));
+      }
+    });
+  }
+
+  /* Keeps the results updated */
+  void scanDevices() async {
+      print("\n== Started BLE scan ==\n\n");
+      await for (final scanResult in RxBle.startScan()) {
+        results[scanResult.deviceId] = scanResult;
+        print(scanResult);
+        updateBeaconInformation(scanResult);
+        // checkFound();
+      }
+      print("\n== Ended BLE scan ==\n\n");
   }
 
   void checkLocationPermission() async {
@@ -95,6 +151,7 @@ class MapController extends State<MapPage> {
       setState(() {
         currentState = 2;
       });
+      scanDevices();
     }
   }
 
@@ -105,37 +162,24 @@ class MapController extends State<MapPage> {
 
   @override
   void dispose() {
-    // TODO: Stop scanning of BLE devices
+    RxBle.stopScan();
     super.dispose();
   }
 
-  void fetchPlaces() async {
-    final res = await http.get(Constants.API_URL + '/api/v1/places/');
-    var data = json.decode(res.body) as List;
-
-    places = data.map<Place>((json) => Place.fromJSON(json)).toList();
-
-    final edges = await http.get(Constants.API_URL + '/api/v1/edges/');
-    var edgeData = json.decode(edges.body) as List;
-
-    //Go through every edge and get the origin from places and add the des
-    for(int i = 0; i < edgeData.length; i++) {
-      Map<String, dynamic> json = edgeData[i];
-      String s1 = json['vertex1']['name'];
-      String s2 = json['vertex2']['name'];
-
-      Place p1, p2;
-      for(int j = 0; j < places.length; j++) {
-        if(places[j].name == s1) p1 = places[j];
-        else if(places[j].name == s2) p2= places[j];
-      }
-
-      p1.addAdj(p2);
-      p2.addAdj(p1);
-    }
-  }
-
   Future<List<Place>> search(String searchStr) async {
+    // print('\n\n\n');
+    // print(beacons[0].macAddress);
+    // print(beacons[0].lastSeen);
+    // print(beacons[0].distance);
+    // print('\n\n\n');
+    // print(beacons[1].macAddress);
+    // print(beacons[1].lastSeen);
+    // print(beacons[1].distance);
+    // print('\n\n\n');
+    // print(beacons[2].macAddress);
+    // print(beacons[2].lastSeen);
+    // print(beacons[2].distance);
+    // print('\n\n\n');
     return places.where((place) => place.name.toLowerCase().contains(searchStr.toLowerCase()) && place is Room).toList();
   }
 
@@ -308,6 +352,93 @@ class MapController extends State<MapPage> {
     controller.animateCamera(camera);
   }
 
+  mapToolkit.LatLng calculateCurrentPosition(mapToolkit.LatLng origin, mapToolkit.LatLng b1, mapToolkit.LatLng b2, mapToolkit.LatLng b3, double d1, double d2, double d3) {
+    List<double> b1Meters = getMetersCoords(origin, b1);
+    List<double> b2Meters = getMetersCoords(origin, b2);
+    List<double> b3Meters = getMetersCoords(origin, b3);
+
+    // FIXME: hardcoded values
+    List<double> meMeters = getMetersCoords(origin, actualMe);
+    double d1F = getDistanceBetween(b1Meters, meMeters);
+    double d2F = getDistanceBetween(b2Meters, meMeters);
+    double d3F = getDistanceBetween(b3Meters, meMeters);
+
+    // Get 2 circle intersections
+    List<double> intersections = intersection(b1Meters[0], b1Meters[1], d1F, b2Meters[0], b2Meters[1], d2F);
+
+    // Which one of those is closest to b3?
+    double i1Distance = getDistanceBetween([intersections[0], intersections[1]], b3Meters);
+    double i2Distance = getDistanceBetween([intersections[2], intersections[3]], b3Meters);
+
+    print('1: (' + intersections[0].toString() + ', ' + intersections[1].toString() + ')');
+    print('2: (' + intersections[2].toString() + ', ' + intersections[3].toString() + ')');
+
+    mapToolkit.LatLng one = getLatLngCoords(origin, intersections[0], intersections[1]);
+    mapToolkit.LatLng two = getLatLngCoords(origin, intersections[2], intersections[3]);
+
+    print('L1: (' + one.latitude.toString() + ', ' + one.longitude.toString() + ')');
+    print('L2: (' + two.latitude.toString() + ', ' + two.longitude.toString() + ')');
+
+    if (i1Distance < i2Distance) {
+      return getLatLngCoords(origin, intersections[0], intersections[1]);
+    } else {
+      return getLatLngCoords(origin, intersections[2], intersections[3]);
+    }
+  }
+
+  double getDistanceBetween(List<double> p1, List<double> p2) {
+    return sqrt(pow(p2[1] - p1[1], 2) + pow(p2[0] - p1[0], 2));
+  }
+
+  mapToolkit.LatLng getLatLngCoords(mapToolkit.LatLng origin, double metersX, double metersY) {
+    mapToolkit.LatLng coords = new mapToolkit.LatLng(mapToolkit.SphericalUtil.computeOffsetOrigin(origin, metersY, 0).latitude,
+        mapToolkit.SphericalUtil.computeOffsetOrigin(origin, metersX, 270).longitude);
+    return coords;
+  }
+
+  List<double> getMetersCoords(mapToolkit.LatLng origin, mapToolkit.LatLng place) {
+    double metersX = mapToolkit.SphericalUtil.computeDistanceBetween(REF_LOC, new mapToolkit.LatLng(origin.latitude, place.longitude));
+    double metersY = mapToolkit.SphericalUtil.computeDistanceBetween(REF_LOC, new mapToolkit.LatLng(place.latitude, origin.longitude));
+    return [metersX, metersY];
+  }
+
+  List<double> intersection(x0, y0, r0, x1, y1, r1) {
+    var a, dx, dy, d, h, rx, ry;
+    var x2, y2;
+
+    dx = x1 - x0;
+    dy = y1 - y0;
+
+    d = sqrt((dy*dy) + (dx*dx));
+
+    if (d > (r0 + r1)) {
+      /* no solution. circles do not intersect. */
+      return [];
+    }
+    if (d < (r0 - r1).abs()) {
+      /* no solution. one circle is contained in the other */
+      return [];
+    }
+
+    a = ((r0*r0) - (r1*r1) + (d*d)) / (2.0 * d) ;
+
+    x2 = x0 + (dx * a/d);
+    y2 = y0 + (dy * a/d);
+
+    h = sqrt((r0*r0) - (a*a));
+
+    rx = -dy * (h/d);
+    ry = dx * (h/d);
+
+    var xi = x2 + rx;
+    var xi_prime = x2 - rx;
+    var yi = y2 + ry;
+    var yi_prime = y2 - ry;
+
+    return [xi, yi, xi_prime, yi_prime];
+  }
+
+  // TODO: give a better name
   void updateUserLocation() async {
     setState(() {
       circles.clear();
