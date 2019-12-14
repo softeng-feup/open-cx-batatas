@@ -21,6 +21,10 @@ double screenWidth(BuildContext context) {
   return MediaQuery.of(context).size.width;
 }
 
+double screenTextScale(BuildContext context) {
+  return MediaQuery.textScaleFactorOf(context);
+}
+
 class ProfilePageState extends State<ProfilePage> {
   final AssetImage _profilePic;
 
@@ -28,15 +32,14 @@ class ProfilePageState extends State<ProfilePage> {
   final position = "Student";
   final job = "Super Company";
   final interest = "Bird Watching";
-  final elementPadding = 4.0;
 
   ProfilePageState(this._profilePic);
 
   @override
   Widget build(BuildContext context) {
-    //"draw" method
+    // "draw" method
     return Container(
-      padding: EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.all(10.0),
       child: Column(
         children: [
           CircleAvatar(
@@ -89,46 +92,68 @@ class ProfilePageState extends State<ProfilePage> {
             ),
           ),
           // cenas sobre a pessoa
-          Container(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.work,
-                      // color: Colors.pink,
-                      size: 30.0, // relativo ao ecra
-                      semanticLabel: 'work icon',
-                    ),
-                    Text(" - " + position + " at " + job),
-                  ],
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.work,
+                        // size: screenSize(context).aspectRatio*2, // relativo ao ecra
+                        semanticLabel: 'work icon',
+                      ),
+                      Text(
+                        " - " + position + " at " + job,
+                        style: TextStyle(
+                          fontSize: screenTextScale(context) * 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.star,
-                      // color: Colors.pink,
-                      size: 30.0, // relativo ao ecra
-                      semanticLabel: 'work icon',
-                    ),
-                    Text(" - " + "Likes " + interest),
-                    //if(speaker) Text("Speaker at OpenCX"),
-                  ],
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.star,
+                        // size: screenSize(context).aspectRatio *
+                        //     0.03, // relativo ao ecra
+                        semanticLabel: 'interests icon',
+                      ),
+                      Text(
+                        " - " + "Likes " + interest,
+                        style: TextStyle(
+                          fontSize: screenTextScale(context) * 15,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.mic,
-                      // color: Colors.pink,
-                      size: 30.0, // relativo ao ecra
-                      semanticLabel: 'work icon',
-                    ),
-                    //if(speaker)
-                    Text(" - Speaker at OpenCX"),
-                  ],
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.mic,
+                        // size: screenSize(context).aspectRatio *
+                        //     0.03, // relativo ao ecra
+                        semanticLabel: 'speaker icon',
+                      ),
+                      // if(speaker)
+                      Text(
+                        " - Speaker at OpenCX",
+                        style:
+                            TextStyle(fontSize: screenTextScale(context) * 15),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
