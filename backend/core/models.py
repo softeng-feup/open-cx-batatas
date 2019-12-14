@@ -144,7 +144,7 @@ class MapEdge(models.Model):
     vertex1 = models.ForeignKey(Place, related_name='vertex1', on_delete=models.CASCADE)
     vertex2 = models.ForeignKey(Place, related_name='vertex2', on_delete=models.CASCADE)
 
-    
+
 class Event(models.Model):
     """
     Event model.
