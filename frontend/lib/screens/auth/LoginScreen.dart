@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../colors.dart';
 
 class LoginScreen extends StatelessWidget {
   final takeToNormalApp;
+
+  final FocusNode _emailFocusNode = new FocusNode();
+  final FocusNode _passwordFocusNode = new FocusNode();
 
   LoginScreen(this.takeToNormalApp);
 
@@ -18,6 +22,17 @@ class LoginScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                     // mainAxisAlignment: MainAxisAlignment.center,
                     child: Column(children: [
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                IconButton(
+                  icon: Icon(FontAwesomeIcons.chevronLeft),
+                  alignment: Alignment.topLeft,
+                  tooltip: 'Go back',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ]),
+              SizedBox(height: 12),
               Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Text(
                   '<Programming> 2020',
@@ -43,6 +58,10 @@ class LoginScreen extends StatelessWidget {
                     hintText: 'Your email address',
                     labelText: 'Email',
                     border: OutlineInputBorder()),
+                textInputAction: TextInputAction.next,
+                focusNode: _emailFocusNode,
+                onEditingComplete: () =>
+                    FocusScope.of(context).requestFocus(_passwordFocusNode),
                 onSaved: (String value) {
                   // This optional block of code can be used to run
                   // code when the user saves the form.
@@ -54,6 +73,8 @@ class LoginScreen extends StatelessWidget {
                     hintText: 'Password',
                     labelText: 'Password',
                     border: OutlineInputBorder()),
+                textInputAction: TextInputAction.done,
+                focusNode: _passwordFocusNode,
                 obscureText: true,
                 onSaved: (String value) {
                   // This optional block of code can be used to run
