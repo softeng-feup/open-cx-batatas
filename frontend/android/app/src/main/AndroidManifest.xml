@@ -10,10 +10,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="open_cx_batatas"
         android:icon="@mipmap/ic_launcher">
-
         <meta-data android:name="com.google.android.geo.API_KEY"
                    android:value="AIzaSyCcZHq2IHDv5dKyxi_zd4EJRV3R3aYLs0s"/>
-
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

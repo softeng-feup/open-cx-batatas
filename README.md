@@ -14,3 +14,31 @@ _Guiding you to success_
 Solution: We aim to build an internal positioning system to connect people with events and other people, giving them directions to their desired destinations.
 
 Resources: We'll need at least 3 Raspberry Pi or 3 Bluetooth low energy beacons to build our prototype.
+
+### User Stories and Acceptance Tests:
+Our user stories are present over at Pivotal Tracker : https://www.pivotaltracker.com/n/projects/2401872
+
+The stories have points assigned, representing the effort of each story, and are ordered by value with the least risk. The acceptance tests are in the description.
+
+### Mockup
+Use this link to view the Mockup (bottom bar navigation is functional): https://www.figma.com/proto/0gYmhHxELM9CL42Cf1oU3I/Mobile-App-Design?node-id=1%3A6&scaling=scale-down
+
+### Architecture
+#### Architecture / design decisions
+For our architecture, we opted for a basic relational schema made up of three different components: backend, mobile app and BLE playground. The mobile app will be how users interact with us, which will be responsible for fetching the backend for updating information, and for scanning the nearby Bluetooth beacons to be able to localize itself.
+
+#### Technology
+For our technology, we decided to go with Django as our backend framework, and Flutter as our mobile app framework.
+
+#### Why Django?
+Django is a MVC python web framework built _for perfectionists with deadlines_, as the motto says. At its core, this framework implements the DRY (don't repeat yourself) software principle to the maximum extent, as everything in Django is from it's models. Because of this, it has a simplistic architecture and it's a great candidate for ESOF because of its short learning curve.
+
+#### Why Flutter?
+Flutter is a SDK for building apps for several different platforms, but it's mainly used for building mobile apps. Flutter helps in the development of mobile apps as it lets the same codebase be used to build both apps for Android and iOS, leading developers to only needing to learn Flutter instead of two different platform development kits (Android Studio and Xcode).
+
+### Actors:
+![Alt text](actors.png?raw=true "Actors")
+
+### Domain Model:
+![Alt text](domainModel.png?raw=true "Domain Model")
+

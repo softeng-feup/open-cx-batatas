@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+  {% if request.user.is_authenticated %}
+  <h1>Hello {{request.user.first_name}}!</h1>
+  {% else %}
+  <h1>Hello unknown user!</h1>
+  {% endif %}
+
+  {% for loc in locations %}
+  <div>
+    x is {{loc.x}}
+    y is {{loc.y}}
+    z is {{loc.z}}
+  </div>
+  {% endfor %}
+
+  
+</body>
+</html>
