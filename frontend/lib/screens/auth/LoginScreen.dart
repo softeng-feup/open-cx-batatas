@@ -58,6 +58,7 @@ class LoginScreen extends StatelessWidget {
                     hintText: 'Your email address',
                     labelText: 'Email',
                     border: OutlineInputBorder()),
+                autofocus: true,
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocusNode,
                 onEditingComplete: () =>

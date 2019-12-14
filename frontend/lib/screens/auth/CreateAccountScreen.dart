@@ -62,6 +62,7 @@ class CreateAccountScreen extends StatelessWidget {
                     hintText: 'Your first name',
                     labelText: 'First name',
                     border: OutlineInputBorder()),
+                autofocus: true,
                 textInputAction: TextInputAction.next,
                 focusNode: _firstNameFocusNode,
                 onEditingComplete: () =>
