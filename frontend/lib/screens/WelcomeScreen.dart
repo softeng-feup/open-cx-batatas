@@ -104,8 +104,9 @@ class WelcomeScreen extends StatelessWidget {
                                     EnterExitRoute(
                                         exitPage:
                                             WelcomeScreen(this.takeToNormalApp),
-                                        enterPage:
-                                            LoginScreen(this.takeToNormalApp)));
+                                        enterPage: LoginScreen(
+                                            takeToNormalApp:
+                                                this.takeToNormalApp)));
                               },
                               child: Text(
                                 'Log in',

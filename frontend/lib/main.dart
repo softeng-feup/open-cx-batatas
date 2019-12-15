@@ -1,10 +1,23 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'profilePage.dart';
 import 'mapPage.dart';
 import 'eventsPage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'colors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'screens/WelcomeScreen.dart';
+import 'package:http/http.dart' as http;
+import 'Constants.dart' as Constants;
+import 'Auth.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'package:loading/loading.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'screens/LoadingScreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -73,8 +86,34 @@ class _MyHomePageState extends State<MyHomePage> {
     fetchAppState();
   }
 
+  /* Gets token information from storage */
+  dynamic getTokenFromStorage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    File tokenFile = File('$path/token.txt');
+
+    try {
+      String tokenFileContents = await tokenFile.readAsString();
+      Map<String, dynamic> tokenJson = json.decode(tokenFileContents);
+      return tokenJson['token'];
+    } catch (e) {
+      return null;
+    }
+  }
+
   /* Refreshes the app's state based on what was saved */
-  void fetchAppState() async {}
+  void fetchAppState() async {
+    String token = await getTokenFromStorage();
+    if (token == null) {
+      setState(() {
+        currentState = 1;
+      });
+    } else {
+      setState(() {
+        currentState = 2;
+      });
+    }
+  }
 
   Scaffold get normalScreen {
     return Scaffold(
@@ -108,6 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     switch (currentState) {
       case 0:
+        return LoadingScreen();
+      case 1:
         return WelcomeScreen(this.takeToNormalApp);
       case 2:
         return normalScreen;
@@ -120,10 +161,29 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<Map<String, dynamic>> requestUserData() async {
+    // TODO: check if logged in
+
+    String token = 'd1ac579d2de6c91455d077b3bb5d12ecae488616';
+    final res = await http.get(Constants.API_URL + 'profile/', headers: {
+      'Authorization': 'Token ' + token,
+      'Content-Type': 'application/json'
+    });
+    return json.decode(res.body);
+  }
+
   void takeToNormalApp(context) {
     this.setState(() {
       this.currentState = 2;
       Navigator.pop(context);
+    });
+    requestUserData().then((json) {
+      Fluttertoast.showToast(
+          msg: 'Welcome ' + json['first_name'],
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 2);
     });
   }
 }

@@ -58,7 +58,7 @@ class CreateAccountScreen extends StatelessWidget {
               ]),
               SizedBox(height: 20),
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     hintText: 'Your first name',
                     labelText: 'First name',
                     border: OutlineInputBorder()),
@@ -74,7 +74,7 @@ class CreateAccountScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     hintText: 'Your last name',
                     labelText: 'Last name',
                     border: OutlineInputBorder()),
@@ -89,7 +89,7 @@ class CreateAccountScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     hintText: 'Your email address',
                     labelText: 'Email',
                     border: OutlineInputBorder()),
@@ -104,7 +104,7 @@ class CreateAccountScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     hintText: 'Your username',
                     labelText: 'Username',
                     border: OutlineInputBorder()),
@@ -119,7 +119,7 @@ class CreateAccountScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     hintText: 'Password',
                     labelText: 'Password',
                     border: OutlineInputBorder()),
