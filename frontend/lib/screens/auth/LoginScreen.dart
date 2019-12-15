@@ -14,7 +14,7 @@ import 'package:path_provider/path_provider.dart';
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key, this.takeToNormalApp}) : super(key: key);
 
-  dynamic takeToNormalApp;
+  final dynamic takeToNormalApp;
 
   @override
   _LoginScreenState createState() => _LoginScreenState(takeToNormalApp);
@@ -23,11 +23,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
   final FocusNode _emailFocusNode = new FocusNode();
   final FocusNode _passwordFocusNode = new FocusNode();
+
   String emailError;
   String passwordError;
   String nonFieldError;
+
   ButtonState loginBtnState;
 
   dynamic takeToNormalApp;
@@ -38,9 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       loginBtnState = ButtonState.inProgress;
     });
+
     emailError = null;
     passwordError = null;
     nonFieldError = null;
+
     final emailValue = emailController.text;
     final passwordValue = passwordController.text;
 
@@ -101,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var data = json.decode(res.body);
       String token = data['token'];
       print(token);
-      saveTokenToStorage(token);
+      // saveTokenToStorage(token);
       this.takeToNormalApp(context);
     }
   }

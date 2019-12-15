@@ -51,7 +51,8 @@ class WelcomeScreen extends StatelessWidget {
                                     exitPage:
                                         WelcomeScreen(this.takeToNormalApp),
                                     enterPage: CreateAccountScreen(
-                                        this.takeToNormalApp)));
+                                        takeToNormalApp:
+                                            this.takeToNormalApp)));
                           }, // button pressed
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

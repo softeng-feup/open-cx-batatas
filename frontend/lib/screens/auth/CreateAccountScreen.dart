@@ -1,9 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../colors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:progress_button/progress_button.dart';
+import '../../Constants.dart' as Constants;
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class CreateAccountScreen extends StatelessWidget {
-  final takeToNormalApp;
+class CreateAccountScreen extends StatefulWidget {
+  CreateAccountScreen({Key key, this.takeToNormalApp}) : super(key: key);
+
+  final dynamic takeToNormalApp;
+
+  @override
+  _CreateAccountScreenState createState() =>
+      _CreateAccountScreenState(takeToNormalApp);
+}
+
+class _CreateAccountScreenState extends State<CreateAccountScreen> {
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
 
   final FocusNode _firstNameFocusNode = new FocusNode();
   final FocusNode _lastNameFocusNode = new FocusNode();
@@ -11,7 +33,136 @@ class CreateAccountScreen extends StatelessWidget {
   final FocusNode _usernameFocusNode = new FocusNode();
   final FocusNode _passwordFocusNode = new FocusNode();
 
-  CreateAccountScreen(this.takeToNormalApp);
+  String firstNameError;
+  String lastNameError;
+  String emailError;
+  String usernameError;
+  String passwordError;
+  String nonFieldError;
+
+  ButtonState createAccountBtnState;
+
+  dynamic takeToNormalApp;
+
+  _CreateAccountScreenState(this.takeToNormalApp);
+
+  void sendRequest(BuildContext context) async {
+    setState(() {
+      createAccountBtnState = ButtonState.inProgress;
+    });
+
+    firstNameError = null;
+    lastNameError = null;
+    emailError = null;
+    usernameError = null;
+    passwordError = null;
+    nonFieldError = null;
+
+    final firstNameValue = firstNameController.text;
+    final lastNameValue = lastNameController.text;
+    final emailValue = emailController.text;
+    final usernameValue = usernameController.text;
+    final passwordValue = passwordController.text;
+
+    final res = await http.post(Constants.API_URL + 'auth/register/', body: {
+      'first_name': firstNameValue,
+      'last_name': lastNameValue,
+      'email': emailValue,
+      'username': usernameValue,
+      'password': passwordValue
+    });
+
+    if (res.statusCode == 400) {
+      var data = json.decode(res.body);
+
+      var firstNameErrors = data['first_name'] as List;
+      if (firstNameErrors != null) {
+        firstNameErrors.forEach((err) {
+          if (firstNameError == null) {
+            firstNameError = err;
+          } else {
+            firstNameError += '\n' + err;
+          }
+        });
+      }
+
+      var lastNameErrors = data['last_name'] as List;
+      if (lastNameErrors != null) {
+        lastNameErrors.forEach((err) {
+          if (lastNameError == null) {
+            lastNameError = err;
+          } else {
+            lastNameError += '\n' + err;
+          }
+        });
+      }
+
+      var emailErrors = data['email'] as List;
+      if (emailErrors != null) {
+        emailErrors.forEach((err) {
+          if (emailError == null) {
+            emailError = err;
+          } else {
+            emailError += '\n' + err;
+          }
+        });
+      }
+
+      var usernameErrors = data['username'] as List;
+      if (usernameErrors != null) {
+        usernameErrors.forEach((err) {
+          if (usernameError == null) {
+            usernameError = err;
+          } else {
+            usernameError += '\n' + err;
+          }
+        });
+      }
+
+      var passwordErrors = data['password'] as List;
+      if (passwordErrors != null) {
+        passwordErrors.forEach((err) {
+          if (passwordError == null) {
+            passwordError = err;
+          } else {
+            passwordError += '\n' + err;
+          }
+        });
+      }
+
+      var nonFieldErrors = data['non_field_errors'] as List;
+      if (nonFieldErrors != null) {
+        nonFieldErrors.forEach((err) {
+          if (nonFieldError == null) {
+            nonFieldError = err;
+          } else {
+            nonFieldError += '\n' + err;
+          }
+        });
+
+        Fluttertoast.showToast(
+            msg: nonFieldError,
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 2);
+      }
+
+      setState(() {
+        createAccountBtnState = ButtonState.error;
+      });
+    } else if (res.statusCode == 200) {
+      setState(() {
+        createAccountBtnState = ButtonState.normal;
+      });
+
+      var data = json.decode(res.body);
+      String token = data['token'];
+      print(token);
+      // saveTokenToStorage(token);
+      this.takeToNormalApp(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +291,16 @@ class CreateAccountScreen extends StatelessWidget {
                   child: Text('Create account',
                       style: TextStyle(color: Colors.black)),
                 ),
-              )
+              ),
+              ProgressButton(
+                child: Text('Login',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w600)),
+                onPressed: () => this.sendRequest(context),
+                buttonState: loginBtnState,
+                backgroundColor: Colors.grey[300],
+                progressColor: Theme.of(context).primaryColor,
+              ),
             ]))))));
   }
 }
