@@ -20,7 +20,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=50)
     last_name = models.CharField(_('last name'), max_length=50)
     email = models.EmailField(_('email address'), unique=True)
-    date_of_birth = models.DateField(_('date of birth'))
     GENDER_CHOICES = (
         ('MALE', _('Male')),
         ('FEMALE', _('Female')),
@@ -40,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'username', 'date_of_birth']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     def __str__(self):
         return self.get_full_name()

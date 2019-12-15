@@ -85,7 +85,7 @@ class UserSignUpSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'username', 'date_of_birth', 'password')
+        fields = ('email', 'first_name', 'last_name', 'username', 'password')
 
     def create(self, validated_data):
         new_user = User(**validated_data)
@@ -108,17 +108,6 @@ class UserSignUpSerializer(serializers.ModelSerializer):
         if has_special_chars(value):
             raise serializers.ValidationError('No spaces, numbers and special characters allowed.') # pylint: disable=line-too-long
         return value.strip().title()
-
-    def validate_date_of_birth(self, value): # pylint: disable=no-self-use
-        """
-        Validates if date_of_birth was
-        more that 13 years ago.
-        """
-        today = date.today()
-        age = today.year - value.year - ((today.month, today.day) < (value.month, value.day))
-        if age < 13:
-            raise serializers.ValidationError('You must be at least 13 to create an account.')
-        return value
 
     def validate_password(self, value):
         """
