@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /* Gets token information from storage */
-  dynamic getTokenFromStorage() async {
+  Future<String> getTokenFromStorage() async {
     final directory = await getApplicationDocumentsDirectory();
     final path = directory.path;
     File tokenFile = File('$path/token.txt');
@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       String tokenFileContents = await tokenFile.readAsString();
       Map<String, dynamic> tokenJson = json.decode(tokenFileContents);
-      return tokenJson['token'];
+      return tokenJson['token'].toString();
     } catch (e) {
       return null;
     }
@@ -161,10 +161,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<Map<String, dynamic>> requestUserData() async {
-    // TODO: check if logged in
+  Future<dynamic> requestUserData() async {
+    String token = await getTokenFromStorage();
+    if (token == null) {
+      return null;
+    }
 
-    String token = 'd1ac579d2de6c91455d077b3bb5d12ecae488616';
     final res = await http.get(Constants.API_URL + 'profile/', headers: {
       'Authorization': 'Token ' + token,
       'Content-Type': 'application/json'
@@ -174,16 +176,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void takeToNormalApp(context) {
     this.setState(() {
-      this.currentState = 2;
+      this.currentState = 0;
       Navigator.pop(context);
     });
-    requestUserData().then((json) {
-      Fluttertoast.showToast(
-          msg: 'Welcome ' + json['first_name'],
-          toastLength: Toast.LENGTH_LONG,
-          backgroundColor: Colors.red,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 2);
+    new Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        this.currentState = 2;
+      });
+      this.requestUserData().then((json) {
+        Fluttertoast.showToast(
+            msg: 'Welcome ' + json['first_name'],
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 2);
+      });
     });
   }
 }

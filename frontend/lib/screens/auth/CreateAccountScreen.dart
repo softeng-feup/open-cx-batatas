@@ -7,7 +7,8 @@ import '../../Constants.dart' as Constants;
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'dart:convert';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -64,16 +65,26 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     final usernameValue = usernameController.text;
     final passwordValue = passwordController.text;
 
-    final res = await http.post(Constants.API_URL + 'auth/register/', body: {
-      'first_name': firstNameValue,
-      'last_name': lastNameValue,
-      'email': emailValue,
-      'username': usernameValue,
-      'password': passwordValue
-    });
+    try {
+      Dio dio = new Dio();
+      final res = await dio.post(Constants.API_URL + 'auth/register/', data: {
+        'first_name': firstNameValue,
+        'last_name': lastNameValue,
+        'email': emailValue,
+        'username': usernameValue,
+        'password': passwordValue
+      });
+      setState(() {
+        createAccountBtnState = ButtonState.normal;
+      });
 
-    if (res.statusCode == 400) {
-      var data = json.decode(res.body);
+      // var data = json.decode(res.body);
+      var data = res.data;
+      String token = data['token'];
+      saveTokenToStorage(token);
+      this.takeToNormalApp(context);
+    } on DioError catch (e) {
+      var data = e.response.data;
 
       var firstNameErrors = data['first_name'] as List;
       if (firstNameErrors != null) {
@@ -151,17 +162,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       setState(() {
         createAccountBtnState = ButtonState.error;
       });
-    } else if (res.statusCode == 200) {
-      setState(() {
-        createAccountBtnState = ButtonState.normal;
-      });
-
-      var data = json.decode(res.body);
-      String token = data['token'];
-      print(token);
-      // saveTokenToStorage(token);
-      this.takeToNormalApp(context);
     }
+  }
+
+  void saveTokenToStorage(String tokenValue) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    File tokenFile = File('$path/token.txt');
+    tokenFile.writeAsString(json.encode({'token': tokenValue}));
   }
 
   @override
@@ -212,8 +220,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 decoration: InputDecoration(
                     hintText: 'Your first name',
                     labelText: 'First name',
+                    errorText: firstNameError,
                     border: OutlineInputBorder()),
                 autofocus: true,
+                textCapitalization: TextCapitalization.sentences,
+                controller: firstNameController,
                 textInputAction: TextInputAction.next,
                 focusNode: _firstNameFocusNode,
                 onEditingComplete: () =>
@@ -228,7 +239,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 decoration: InputDecoration(
                     hintText: 'Your last name',
                     labelText: 'Last name',
+                    errorText: lastNameError,
                     border: OutlineInputBorder()),
+                textCapitalization: TextCapitalization.sentences,
+                controller: lastNameController,
                 textInputAction: TextInputAction.next,
                 focusNode: _lastNameFocusNode,
                 onEditingComplete: () =>
@@ -243,7 +257,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 decoration: InputDecoration(
                     hintText: 'Your email address',
                     labelText: 'Email',
+                    errorText: emailError,
                     border: OutlineInputBorder()),
+                controller: emailController,
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocusNode,
                 onEditingComplete: () =>
@@ -258,7 +274,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 decoration: InputDecoration(
                     hintText: 'Your username',
                     labelText: 'Username',
+                    errorText: usernameError,
                     border: OutlineInputBorder()),
+                controller: usernameController,
                 textInputAction: TextInputAction.next,
                 focusNode: _usernameFocusNode,
                 onEditingComplete: () =>
@@ -273,7 +291,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 decoration: InputDecoration(
                     hintText: 'Password',
                     labelText: 'Password',
+                    errorText: passwordError,
                     border: OutlineInputBorder()),
+                controller: passwordController,
                 textInputAction: TextInputAction.done,
                 focusNode: _passwordFocusNode,
                 obscureText: true,
@@ -283,21 +303,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 },
               ),
               SizedBox(height: 20),
-              ButtonTheme(
-                minWidth: MediaQuery.of(context).size.width,
-                buttonColor: Colors.grey[300],
-                child: RaisedButton(
-                  onPressed: () => this.takeToNormalApp(context),
-                  child: Text('Create account',
-                      style: TextStyle(color: Colors.black)),
-                ),
-              ),
               ProgressButton(
-                child: Text('Login',
+                child: Text('Create account',
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.w600)),
                 onPressed: () => this.sendRequest(context),
-                buttonState: loginBtnState,
+                buttonState: createAccountBtnState,
                 backgroundColor: Colors.grey[300],
                 progressColor: Theme.of(context).primaryColor,
               ),

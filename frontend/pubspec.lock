@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.7"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -175,9 +182,11 @@ packages:
   progress_button:
     dependency: "direct main"
     description:
-      name: progress_button
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "8f803f0cc5c697a94742cafeac7487c7b9858096"
+      url: "https://github.com/mwgriffiths88/ProgressButton"
+    source: git
     version: "0.0.2"
   quiver:
     dependency: transitive
@@ -255,5 +264,5 @@ packages:
     source: hosted
     version: "3.5.0"
 sdks:
-  dart: ">=2.4.0 <3.0.0"
+  dart: ">2.4.0 <3.0.0"
   flutter: ">=1.10.0 <2.0.0"

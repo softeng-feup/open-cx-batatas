@@ -105,8 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       var data = json.decode(res.body);
       String token = data['token'];
-      print(token);
-      // saveTokenToStorage(token);
+      saveTokenToStorage(token);
       this.takeToNormalApp(context);
     }
   }
