@@ -1,7 +1,23 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'profilePage.dart';
 import 'mapPage.dart';
 import 'eventsPage.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'colors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'screens/WelcomeScreen.dart';
+import 'package:http/http.dart' as http;
+import 'Constants.dart' as Constants;
+import 'Auth.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'package:loading/loading.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'screens/LoadingScreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Marauder's Mapp",
+      title: "<Programming> 2020",
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -21,9 +37,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: MaterialColor(0xff0f2f7f, programmingColor),
       ),
-      home: MyHomePage(title: "Marauder's Mapp"),
+      home: MyHomePage(title: "<Programming> 2020"),
     );
   }
 }
@@ -47,52 +63,134 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 1;
+  int _currentIndex = 0;
   final List<Widget> _children = [
-    ProfilePage(),
     MapPage(),
-    EventsPage()
+    EventsPage(),
+    ProfilePage(),
   ];
 
+  /*
+     0 - loading
+     1 - is logged out
+     2 - is logged in
+  */
+  int currentState;
+  bool hasSeenOnboarding;
+
   @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+  void initState() {
+    super.initState();
+    currentState = 0;
+    hasSeenOnboarding = false;
+    fetchAppState();
+  }
+
+  /* Gets token information from storage */
+  Future<String> getTokenFromStorage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    File tokenFile = File('$path/token.txt');
+
+    try {
+      String tokenFileContents = await tokenFile.readAsString();
+      Map<String, dynamic> tokenJson = json.decode(tokenFileContents);
+      return tokenJson['token'].toString();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* Refreshes the app's state based on what was saved */
+  void fetchAppState() async {
+    String token = await getTokenFromStorage();
+    if (token == null) {
+      setState(() {
+        currentState = 1;
+      });
+    } else {
+      setState(() {
+        currentState = 2;
+      });
+    }
+  }
+
+  Scaffold get normalScreen {
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.title, style: TextStyle(fontFamily: 'Fontin Sans')),
       ),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
-        currentIndex: _currentIndex, // this will be set when a new tab is tapped
+        currentIndex:
+            _currentIndex, // this will be set when a new tab is tapped
         items: [
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.person),
-            title: new Text('Profile'),
-          ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.map),
             title: new Text('Map'),
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today),
-              title: Text('Events')
-          )
+              icon: Icon(Icons.calendar_today), title: Text('Events')),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.person),
+            title: new Text('Profile'),
+          ),
         ],
       ),
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    switch (currentState) {
+      case 0:
+        return LoadingScreen();
+      case 1:
+        return WelcomeScreen(this.takeToNormalApp);
+      case 2:
+        return normalScreen;
+    }
+  }
+
   void changePage(int index) {
     setState(() {
       _currentIndex = index;
+    });
+  }
+
+  Future<dynamic> requestUserData() async {
+    String token = await getTokenFromStorage();
+    if (token == null) {
+      return null;
+    }
+
+    final res = await http.get(Constants.API_URL + 'profile/', headers: {
+      'Authorization': 'Token ' + token,
+      'Content-Type': 'application/json'
+    });
+    return json.decode(res.body);
+  }
+
+  void takeToNormalApp(context) {
+    this.setState(() {
+      this.currentState = 0;
+      Navigator.pop(context);
+    });
+    new Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        this.currentState = 2;
+      });
+      this.requestUserData().then((json) {
+        Fluttertoast.showToast(
+            msg: 'Welcome ' + json['first_name'],
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 2);
+      });
     });
   }
 }
