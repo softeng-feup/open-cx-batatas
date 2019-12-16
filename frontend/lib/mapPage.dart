@@ -19,7 +19,6 @@ import 'dart:math';
 import 'package:maps_toolkit/maps_toolkit.dart' as mapToolkit;
 import 'map/fetchers.dart';
 
-
 class MapPage extends StatefulWidget {
   final User user = new User(41.177764, -8.596490);
 
@@ -39,11 +38,13 @@ class MapController extends State<MapPage> {
     bearing: 90,
   );
 
-  static final MinMaxZoomPreference zoomPreference = MinMaxZoomPreference(18.0, 100);
+  static final MinMaxZoomPreference zoomPreference =
+      MinMaxZoomPreference(18.0, 100);
 
   static final CameraTargetBounds cameraBounds = CameraTargetBounds(
-      LatLngBounds(southwest: LatLng(41.177421, -8.598519), northeast: LatLng(41.178487, -8.594044))
-  );
+      LatLngBounds(
+          southwest: LatLng(41.177421, -8.598519),
+          northeast: LatLng(41.178487, -8.594044)));
   User _user;
   String _mapStyle;
 
@@ -70,7 +71,8 @@ class MapController extends State<MapPage> {
   int currentState;
 
   /* Origin location for meters cartesian representation */
-  mapToolkit.LatLng REF_LOC = mapToolkit.LatLng(41.177958, -8.597342); // From A->B, top left corner
+  mapToolkit.LatLng REF_LOC =
+      mapToolkit.LatLng(41.177958, -8.597342); // From A->B, top left corner
 
   /* Will hold scan results */
   final results = <String, ScanResult>{};
@@ -78,7 +80,6 @@ class MapController extends State<MapPage> {
   /* Will hold available beacons */
   List<Beacon> beacons = new List<Beacon>();
   List<Place> places = new List<Place>();
-
 
   mapToolkit.LatLng b1;
   mapToolkit.LatLng b2;
@@ -121,21 +122,22 @@ class MapController extends State<MapPage> {
     beacons.forEach((beacon) {
       if (beacon.macAddress == scanResult.deviceId) {
         beacon.updatedLastSeen = scanResult.time;
-        beacon.updatedDistance = pow(10, (mp - scanResult.rssi)/(10 * ambient));
+        beacon.updatedDistance =
+            pow(10, (mp - scanResult.rssi) / (10 * ambient));
       }
     });
   }
 
   /* Keeps the results updated */
   void scanDevices() async {
-      print("\n== Started BLE scan ==\n\n");
-      await for (final scanResult in RxBle.startScan()) {
-        results[scanResult.deviceId] = scanResult;
-        print(scanResult);
-        updateBeaconInformation(scanResult);
-        // checkFound();
-      }
-      print("\n== Ended BLE scan ==\n\n");
+    print("\n== Started BLE scan ==\n\n");
+    await for (final scanResult in RxBle.startScan()) {
+      results[scanResult.deviceId] = scanResult;
+      print(scanResult);
+      updateBeaconInformation(scanResult);
+      // checkFound();
+    }
+    print("\n== Ended BLE scan ==\n\n");
   }
 
   void checkLocationPermission() async {
@@ -156,6 +158,7 @@ class MapController extends State<MapPage> {
   }
 
   void requestLocationPermission() async {
+    await PermissionHandler().requestPermissions([PermissionGroup.location]);
     await RxBle.requestAccess();
     checkLocationPermission();
   }
@@ -180,126 +183,133 @@ class MapController extends State<MapPage> {
     // print(beacons[2].lastSeen);
     // print(beacons[2].distance);
     // print('\n\n\n');
-    return places.where((place) => place.name.toLowerCase().contains(searchStr.toLowerCase()) && place is Room).toList();
+    return places
+        .where((place) =>
+            place.name.toLowerCase().contains(searchStr.toLowerCase()) &&
+            place is Room)
+        .toList();
   }
 
   Container getMapContainer() {
     return Container(
         alignment: Alignment.center,
         child: Stack(
-            children: <Widget>[
-              GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: _feupPosition,
-                  minMaxZoomPreference: zoomPreference,
-                  myLocationEnabled: true,
-                  indoorViewEnabled: true,
-                  compassEnabled: false,
-                  myLocationButtonEnabled: true,
-                  cameraTargetBounds: cameraBounds,
-                  onMapCreated: (GoogleMapController controller) {
-                    controller.setMapStyle(_mapStyle);
-                    _controller.complete(controller);
-                  },
-                  circles: circles,
-                  markers: markerSet,
-                  polylines: routeSet,
-                  mapToolbarEnabled: true,
-              ),
-              Center(
-                  heightFactor: 1,
-                  child: ListTileTheme(
-                      style: ListTileStyle.list,
-                      iconColor: Colors.blue,
-                      selectedColor: Colors.red,
-                      child: Container (
-                          width: 360,
-                          height: 300,
-                          child: SearchBar(
-                              //searchBarController: _searchBarController,
-                              iconActiveColor: Colors.blue,
-                              hintText: "Search location here",
-                              hintStyle: TextStyle(
-                                  color: Color.fromRGBO(212, 212, 212, 1),
-                              ),
-                              textStyle: TextStyle(
-                                  color: Colors.black,
-                              ),
-                              placeHolder: SizedBox.shrink(),
-                              loader: SizedBox.shrink(),
-                              mainAxisSpacing: 10,
-                              searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
-                              listPadding: EdgeInsets.symmetric(horizontal: 10),
-                              onSearch: search,
-                              onItemFound: (Place place, int index) {
-                                return Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.fromBorderSide(BorderSide(color: Colors.blue)),
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                    ),
-                                    child: ListTile(
-                                        title: Text(place.type + place.name),
-                                        subtitle: Text("Floor: " + place.floor.toString()),
-                                        onTap: () {this.markLocation(place);},
-                                        trailing: Icon(Icons.location_on, color: Colors.deepOrange),
-                                    ),
-                                );
-                              },
-                              searchBarStyle: SearchBarStyle(
-                                                  backgroundColor: Color.fromRGBO(255, 255, 255, .95),
-                                                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                                  padding: EdgeInsets.all(5.0),
-                                              ),
+          children: <Widget>[
+            GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: _feupPosition,
+              minMaxZoomPreference: zoomPreference,
+              myLocationEnabled: true,
+              indoorViewEnabled: true,
+              compassEnabled: false,
+              myLocationButtonEnabled: true,
+              cameraTargetBounds: cameraBounds,
+              onMapCreated: (GoogleMapController controller) {
+                controller.setMapStyle(_mapStyle);
+                _controller.complete(controller);
+              },
+              circles: circles,
+              markers: markerSet,
+              polylines: routeSet,
+              mapToolbarEnabled: true,
+            ),
+            Center(
+              heightFactor: 1,
+              child: ListTileTheme(
+                style: ListTileStyle.list,
+                iconColor: Colors.blue,
+                selectedColor: Colors.red,
+                child: Container(
+                  width: 360,
+                  height: 300,
+                  child: SearchBar(
+                    //searchBarController: _searchBarController,
+                    iconActiveColor: Colors.blue,
+                    hintText: "Search location here",
+                    hintStyle: TextStyle(
+                      color: Color.fromRGBO(212, 212, 212, 1),
+                    ),
+                    textStyle: TextStyle(
+                      color: Colors.black,
+                    ),
+                    placeHolder: SizedBox.shrink(),
+                    loader: SizedBox.shrink(),
+                    mainAxisSpacing: 10,
+                    searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
+                    listPadding: EdgeInsets.symmetric(horizontal: 10),
+                    onSearch: search,
+                    onItemFound: (Place place, int index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border.fromBorderSide(
+                              BorderSide(color: Colors.blue)),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        child: ListTile(
+                          title: Text(place.type + place.name),
+                          subtitle: Text("Floor: " + place.floor.toString()),
+                          onTap: () {
+                            this.markLocation(place);
+                          },
+                          trailing:
+                              Icon(Icons.location_on, color: Colors.deepOrange),
+                        ),
+                      );
+                    },
+                    searchBarStyle: SearchBarStyle(
+                      backgroundColor: Color.fromRGBO(255, 255, 255, .95),
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      padding: EdgeInsets.all(5.0),
+                    ),
                   ),
                 ),
               ),
             ),
           ],
-        )
-    );
+        ));
   }
 
   Container getLoadingContainer() {
     return Container(
-        color: Colors.white,
-        child: Center(
-            child: Loading(indicator: BallPulseIndicator(), size: 100.0, color: Colors.lightBlue),
-        ),
+      color: Colors.white,
+      child: Center(
+        child: Loading(
+            indicator: BallPulseIndicator(),
+            size: 100.0,
+            color: Colors.lightBlue),
+      ),
     );
   }
 
   Container getRequestLocationContainer() {
     return Container(
-        color: Colors.white,
-        child: Center(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(FontAwesomeIcons.bluetoothB, size: 60, color: Colors.lightBlue), 
-                  SizedBox(height: 20),
-                  Text(
-                      Constants.locationMissingStr,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 20),
-                  ButtonTheme(
-                      minWidth: 150.0,
-                      height: 38.0,
-                      buttonColor: Colors.grey[300],
-                      child: RaisedButton(
-                          onPressed: requestLocationPermission,
-                          child: const Text(
-                              'Grant permission',
-                              style: TextStyle(fontSize: 16)
-                          ),
-                      ),
-                  )
-                ]
+      color: Colors.white,
+      child: Center(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+            Icon(FontAwesomeIcons.bluetoothB,
+                size: 60, color: Colors.lightBlue),
+            SizedBox(height: 20),
+            Text(
+              Constants.locationMissingStr,
+              style: TextStyle(color: Colors.black, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
+            ButtonTheme(
+              minWidth: 150.0,
+              height: 38.0,
+              buttonColor: Colors.grey[300],
+              child: RaisedButton(
+                onPressed: requestLocationPermission,
+                child: const Text('Grant permission',
+                    style: TextStyle(fontSize: 16)),
+              ),
             )
-        ),
+          ])),
     );
   }
 
@@ -325,34 +335,58 @@ class MapController extends State<MapPage> {
     setState(() {
       routeSet.clear();
 
-      Polyline r = Polyline(polylineId: PolylineId("start"), points: [LatLng(_user.latitude, _user.longitude), LatLng(path[0].latitude, path[0].longitude)], color: Colors.orange, zIndex: 0);
+      Polyline r = Polyline(
+          polylineId: PolylineId("start"),
+          points: [
+            LatLng(_user.latitude, _user.longitude),
+            LatLng(path[0].latitude, path[0].longitude)
+          ],
+          color: Colors.orange,
+          zIndex: 0);
       routeSet.add(r);
 
-      for(int i = 0; i < path.length - 1; i++) {
+      for (int i = 0; i < path.length - 1; i++) {
         Place place1 = path[i];
         Place place2 = path[i + 1];
 
-        Polyline route = Polyline(polylineId: PolylineId(i.toString()), points: [LatLng(place1.latitude, place1.longitude), LatLng(place2.latitude, place2.longitude)], color: Colors.orange, zIndex: 0);
+        Polyline route = Polyline(
+            polylineId: PolylineId(i.toString()),
+            points: [
+              LatLng(place1.latitude, place1.longitude),
+              LatLng(place2.latitude, place2.longitude)
+            ],
+            color: Colors.orange,
+            zIndex: 0);
         routeSet.add(route);
       }
-
     });
   }
 
   void markLocation(Place place) async {
     setState(() {
       markerSet.clear();
-      Marker marker = Marker(position: LatLng(place.latitude, place.longitude), markerId: MarkerId("markedLocation"),
-                            icon: BitmapDescriptor.defaultMarkerWithHue(15), onTap: () => this.calculateRoute(place));
+      Marker marker = Marker(
+          position: LatLng(place.latitude, place.longitude),
+          markerId: MarkerId("markedLocation"),
+          icon: BitmapDescriptor.defaultMarkerWithHue(15),
+          onTap: () => this.calculateRoute(place));
       markerSet.add(marker);
     });
 
     GoogleMapController controller = await _controller.future;
-    CameraUpdate camera = CameraUpdate.newLatLngZoom(LatLng(place.latitude, place.longitude), 80.0);
+    CameraUpdate camera = CameraUpdate.newLatLngZoom(
+        LatLng(place.latitude, place.longitude), 80.0);
     controller.animateCamera(camera);
   }
 
-  mapToolkit.LatLng calculateCurrentPosition(mapToolkit.LatLng origin, mapToolkit.LatLng b1, mapToolkit.LatLng b2, mapToolkit.LatLng b3, double d1, double d2, double d3) {
+  mapToolkit.LatLng calculateCurrentPosition(
+      mapToolkit.LatLng origin,
+      mapToolkit.LatLng b1,
+      mapToolkit.LatLng b2,
+      mapToolkit.LatLng b3,
+      double d1,
+      double d2,
+      double d3) {
     List<double> b1Meters = getMetersCoords(origin, b1);
     List<double> b2Meters = getMetersCoords(origin, b2);
     List<double> b3Meters = getMetersCoords(origin, b3);
@@ -364,20 +398,41 @@ class MapController extends State<MapPage> {
     double d3F = getDistanceBetween(b3Meters, meMeters);
 
     // Get 2 circle intersections
-    List<double> intersections = intersection(b1Meters[0], b1Meters[1], d1F, b2Meters[0], b2Meters[1], d2F);
+    List<double> intersections = intersection(
+        b1Meters[0], b1Meters[1], d1F, b2Meters[0], b2Meters[1], d2F);
 
     // Which one of those is closest to b3?
-    double i1Distance = getDistanceBetween([intersections[0], intersections[1]], b3Meters);
-    double i2Distance = getDistanceBetween([intersections[2], intersections[3]], b3Meters);
+    double i1Distance =
+        getDistanceBetween([intersections[0], intersections[1]], b3Meters);
+    double i2Distance =
+        getDistanceBetween([intersections[2], intersections[3]], b3Meters);
 
-    print('1: (' + intersections[0].toString() + ', ' + intersections[1].toString() + ')');
-    print('2: (' + intersections[2].toString() + ', ' + intersections[3].toString() + ')');
+    print('1: (' +
+        intersections[0].toString() +
+        ', ' +
+        intersections[1].toString() +
+        ')');
+    print('2: (' +
+        intersections[2].toString() +
+        ', ' +
+        intersections[3].toString() +
+        ')');
 
-    mapToolkit.LatLng one = getLatLngCoords(origin, intersections[0], intersections[1]);
-    mapToolkit.LatLng two = getLatLngCoords(origin, intersections[2], intersections[3]);
+    mapToolkit.LatLng one =
+        getLatLngCoords(origin, intersections[0], intersections[1]);
+    mapToolkit.LatLng two =
+        getLatLngCoords(origin, intersections[2], intersections[3]);
 
-    print('L1: (' + one.latitude.toString() + ', ' + one.longitude.toString() + ')');
-    print('L2: (' + two.latitude.toString() + ', ' + two.longitude.toString() + ')');
+    print('L1: (' +
+        one.latitude.toString() +
+        ', ' +
+        one.longitude.toString() +
+        ')');
+    print('L2: (' +
+        two.latitude.toString() +
+        ', ' +
+        two.longitude.toString() +
+        ')');
 
     if (i1Distance < i2Distance) {
       return getLatLngCoords(origin, intersections[0], intersections[1]);
@@ -390,15 +445,22 @@ class MapController extends State<MapPage> {
     return sqrt(pow(p2[1] - p1[1], 2) + pow(p2[0] - p1[0], 2));
   }
 
-  mapToolkit.LatLng getLatLngCoords(mapToolkit.LatLng origin, double metersX, double metersY) {
-    mapToolkit.LatLng coords = new mapToolkit.LatLng(mapToolkit.SphericalUtil.computeOffsetOrigin(origin, metersY, 0).latitude,
-        mapToolkit.SphericalUtil.computeOffsetOrigin(origin, metersX, 270).longitude);
+  mapToolkit.LatLng getLatLngCoords(
+      mapToolkit.LatLng origin, double metersX, double metersY) {
+    mapToolkit.LatLng coords = new mapToolkit.LatLng(
+        mapToolkit.SphericalUtil.computeOffsetOrigin(origin, metersY, 0)
+            .latitude,
+        mapToolkit.SphericalUtil.computeOffsetOrigin(origin, metersX, 270)
+            .longitude);
     return coords;
   }
 
-  List<double> getMetersCoords(mapToolkit.LatLng origin, mapToolkit.LatLng place) {
-    double metersX = mapToolkit.SphericalUtil.computeDistanceBetween(REF_LOC, new mapToolkit.LatLng(origin.latitude, place.longitude));
-    double metersY = mapToolkit.SphericalUtil.computeDistanceBetween(REF_LOC, new mapToolkit.LatLng(place.latitude, origin.longitude));
+  List<double> getMetersCoords(
+      mapToolkit.LatLng origin, mapToolkit.LatLng place) {
+    double metersX = mapToolkit.SphericalUtil.computeDistanceBetween(
+        REF_LOC, new mapToolkit.LatLng(origin.latitude, place.longitude));
+    double metersY = mapToolkit.SphericalUtil.computeDistanceBetween(
+        REF_LOC, new mapToolkit.LatLng(place.latitude, origin.longitude));
     return [metersX, metersY];
   }
 
@@ -409,7 +471,7 @@ class MapController extends State<MapPage> {
     dx = x1 - x0;
     dy = y1 - y0;
 
-    d = sqrt((dy*dy) + (dx*dx));
+    d = sqrt((dy * dy) + (dx * dx));
 
     if (d > (r0 + r1)) {
       /* no solution. circles do not intersect. */
@@ -420,15 +482,15 @@ class MapController extends State<MapPage> {
       return [];
     }
 
-    a = ((r0*r0) - (r1*r1) + (d*d)) / (2.0 * d) ;
+    a = ((r0 * r0) - (r1 * r1) + (d * d)) / (2.0 * d);
 
-    x2 = x0 + (dx * a/d);
-    y2 = y0 + (dy * a/d);
+    x2 = x0 + (dx * a / d);
+    y2 = y0 + (dy * a / d);
 
-    h = sqrt((r0*r0) - (a*a));
+    h = sqrt((r0 * r0) - (a * a));
 
-    rx = -dy * (h/d);
-    ry = dx * (h/d);
+    rx = -dy * (h / d);
+    ry = dx * (h / d);
 
     var xi = x2 + rx;
     var xi_prime = x2 - rx;
