@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'Classes.dart';
 
 class EventsPage extends StatefulWidget {
-  EventsPage(
-      {Key key,
-      this.eventsReady,
-      this.events,
-      this.bookmarkIds,
-      this.list23,
-      this.list24,
-      this.list25,
-      this.list26})
-      : super(key: key);
+  EventsPage({
+    Key key,
+    this.eventsReady,
+    this.events,
+  }) : super(key: key);
 
   bool eventsReady;
   List<Event> events;
-  List<int> bookmarkIds;
-  List<Event> list23;
-  List<Event> list24;
-  List<Event> list25;
-  List<Event> list26;
 
   @override
   State<StatefulWidget> createState() {
@@ -66,12 +57,11 @@ class EventsPage extends StatefulWidget {
 //   // new Event(5, 6, 'What', 'Sala 666')
 // ];
 //
-bool three = false;
-bool four = false;
-bool five = false;
-bool six = false;
 
 class EventsPageState extends State<EventsPage> {
+  Map<int, bool> selected = {23: true, 24: false, 25: false, 26: false};
+  int selectedDay = 23;
+
   Widget createEvent(double stackWidth, double startTime, double endTime,
       int index, int family, String text, String room) {
     return new Positioned(
@@ -137,39 +127,12 @@ class EventsPageState extends State<EventsPage> {
             .toList());
   }
 
-  void setThree() {
+  /* Sets a new selected day */
+  void setDay(int day) {
     setState(() {
-      three = true;
-      five = false;
-      four = false;
-      six = false;
-    });
-  }
-
-  void setFour() {
-    setState(() {
-      three = false;
-      five = false;
-      four = true;
-      six = false;
-    });
-  }
-
-  void setFive() {
-    setState(() {
-      three = false;
-      five = true;
-      four = false;
-      six = false;
-    });
-  }
-
-  void setSix() {
-    setState(() {
-      three = false;
-      five = false;
-      four = false;
-      six = true;
+      selected.forEach((k, v) => selected[k] = false);
+      selected[day] = true;
+      selectedDay = day;
     });
   }
 
@@ -249,7 +212,8 @@ class EventsPageState extends State<EventsPage> {
 
       List<Event> bookmarkedEvents = new List();
       for (var i = 0; i < events.length; i++) {
-        if (events[i].isBookmarked) {
+        if (events[i].isBookmarked &&
+            events[i].parsedStart.day == selectedDay) {
           bookmarkedEvents.add(events[i]);
         }
       }
@@ -340,9 +304,9 @@ class EventsPageState extends State<EventsPage> {
                                     Expanded(
                                       child: Container(
                                         child: RawMaterialButton(
-                                          onPressed: setThree,
+                                          onPressed: () => setDay(23),
                                           shape: new CircleBorder(),
-                                          fillColor: three
+                                          fillColor: selected[23]
                                               ? Colors.orangeAccent
                                               : Colors.white,
                                           child: Text('23'),
@@ -352,9 +316,9 @@ class EventsPageState extends State<EventsPage> {
                                     Expanded(
                                       child: Container(
                                         child: RawMaterialButton(
-                                          onPressed: setFour,
+                                          onPressed: () => setDay(24),
                                           shape: new CircleBorder(),
-                                          fillColor: four
+                                          fillColor: selected[24]
                                               ? Colors.orangeAccent
                                               : Colors.white,
                                           child: Text('24'),
@@ -364,9 +328,9 @@ class EventsPageState extends State<EventsPage> {
                                     Expanded(
                                       child: Container(
                                         child: RawMaterialButton(
-                                          onPressed: setFive,
+                                          onPressed: () => setDay(25),
                                           shape: new CircleBorder(),
-                                          fillColor: five
+                                          fillColor: selected[25]
                                               ? Colors.orangeAccent
                                               : Colors.white,
                                           child: Text('25'),
@@ -376,9 +340,9 @@ class EventsPageState extends State<EventsPage> {
                                     Expanded(
                                       child: Container(
                                         child: RawMaterialButton(
-                                          onPressed: setSix,
+                                          onPressed: () => setDay(26),
                                           shape: new CircleBorder(),
-                                          fillColor: six
+                                          fillColor: selected[26]
                                               ? Colors.orangeAccent
                                               : Colors.white,
                                           child: Text('26'),
