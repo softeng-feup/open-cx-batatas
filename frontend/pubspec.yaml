@@ -65,14 +65,8 @@ flutter:
   assets:
     - lib/assets/
     - lib/assets/images/
-<<<<<<< HEAD
-<<<<<<< HEAD
     - lib/assets/maps_style.json
 
-=======
->>>>>>> implemented one post from api
-=======
->>>>>>> 854fb0d8ef15e7e12714885f060ac7b737b5e4a7
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
