@@ -37,8 +37,8 @@ Django is a MVC python web framework built _for perfectionists with deadlines_, 
 Flutter is a SDK for building apps for several different platforms, but it's mainly used for building mobile apps. Flutter helps in the development of mobile apps as it lets the same codebase be used to build both apps for Android and iOS, leading developers to only needing to learn Flutter instead of two different platform development kits (Android Studio and Xcode).
 
 ### Actors:
-![Alt text](actors.png?raw=true "Actors")
+![Alt text](./env/docs/actors.png?raw=true "Actors")
 
 ### Domain Model:
-![Alt text](domainModel.png?raw=true "Domain Model")
+![Alt text](./env/docs/domainModel.png?raw=true "Domain Model")
 
