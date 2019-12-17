@@ -130,6 +130,11 @@ class _MyHomePageState extends State<MyHomePage> {
         index: _currentIndex,
         children: _children,
       ),
+      // body: _children[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _children,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
         type: BottomNavigationBarType
@@ -149,6 +154,8 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: new Icon(Icons.person),
             title: new Text('Profile'),
+          ),
+          BottomNavigationBarItem(
             icon: new Icon(Icons.calendar_today),
             title: new Text('Events'),
           ),
