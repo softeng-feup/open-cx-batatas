@@ -69,62 +69,60 @@ class EventsPageState extends State<EventsPage> {
         left: index * (stackWidth / family),
         width: stackWidth / family,
         height: endTime - startTime,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-                flex: 3,
-                child: Container(
-                    padding: EdgeInsets.fromLTRB(1, 1, 1, 0),
-                    margin: EdgeInsets.fromLTRB(3, 0, 3, 0),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      border: Border(
-                        top: BorderSide(color: Colors.black, width: 1),
-                        right: BorderSide(color: Colors.black, width: 1),
-                        left: BorderSide(color: Colors.black, width: 1),
+        child: Container(
+            margin: EdgeInsets.all(1),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                    flex: 3,
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: new BorderRadius.only(
+                                topLeft: const Radius.circular(30.0),
+                                topRight: const Radius.circular(30.0))),
+                        width: stackWidth,
+                        child: Text(text, textAlign: TextAlign.center))),
+                Expanded(
+                    flex: 5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue[200],
+                        borderRadius: new BorderRadius.only(
+                            bottomLeft: const Radius.circular(30.0),
+                            bottomRight: const Radius.circular(30.0)),
                       ),
-                    ),
-                    width: stackWidth,
-                    child: Text(text, textAlign: TextAlign.center))),
-            Expanded(
-                flex: 5,
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(1, 0, 1, 1),
-                  margin: EdgeInsets.fromLTRB(3, 0, 3, 0),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[200],
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(room, textAlign: TextAlign.center),
-                  ),
-                )),
-          ],
-        ));
+                      child: Center(
+                        child: Text(room, textAlign: TextAlign.center),
+                      ),
+                    )),
+              ],
+            )));
   }
 
   Widget getTextWidgets(List<String> strings, double height) {
-    return new Column(
-        children: strings
-            .map((item) => new Expanded(
-                child: Container(
-                    height: height,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      border: Border(
-                        top: BorderSide(color: Colors.black, width: 1),
-                        right: BorderSide(color: Colors.black, width: 1),
-                        left: BorderSide(color: Colors.black, width: 1),
-                      ),
-                    ),
-                    child: Text(
-                      item,
-                      textAlign: TextAlign.left,
-                    ))))
-            .toList());
+    return new Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          border: Border(
+            right: BorderSide(color: Colors.black, width: 1),
+          ),
+        ),
+        child: Column(
+            children: strings
+                .map((item) => new Flexible(
+                    child: Container(
+                        height: height,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: Colors.black, width: 1),
+                          ),
+                        ),
+                        child: Text(
+                          item,
+                          textAlign: TextAlign.left,
+                        ))))
+                .toList()));
   }
 
   /* Sets a new selected day */
@@ -176,7 +174,6 @@ class EventsPageState extends State<EventsPage> {
       bool isFamily = false;
       int startTime;
       int maxEndTime;
-      int x = 0;
       int y = -1;
       for (int i = 0; i < allEvents.length; i++) {
         Event elem = allEvents[i];
@@ -184,7 +181,6 @@ class EventsPageState extends State<EventsPage> {
         if (isFamily) {
           if (elem.parsedStart.hour >= startTime &&
               elem.parsedEnd.hour <= maxEndTime) {
-            ++x;
             if (elem.parsedEnd.hour > maxEndTime) {
               maxEndTime = elem.parsedEnd.hour;
             }
@@ -195,7 +191,6 @@ class EventsPageState extends State<EventsPage> {
         }
         if (!isFamily) {
           List<Event> lista = [];
-          x = 0;
           y++;
           maxEndTime = elem.parsedEnd.hour;
           startTime = elem.parsedEnd.hour;
