@@ -26,11 +26,11 @@ Please contact us!
 
 Thank you, from the team!
 
-- Alexandre Carqueja
-- Carolina Soares
-- Christopher Abreu
-- Diogo Silva
-- Simão Santos
+- [Alexandre Carqueja](https://github.com/WALEX2000)
+- [Carolina Soares](https://github.com/mcarolinaSoares)
+- [Christopher Abreu](https://github.com/cfa911)
+- [Diogo Silva](https://github.com/iamdiogo)
+- [Simão Santos](https://github.com/Simao-Santos)
 
 ---
 
@@ -79,6 +79,10 @@ At the end, it is good to add a rough indication of the value of the user story 
 ## Architecture and Design
 For our architecture, we opted for a basic relational schema made up of three different components: backend, mobile app and BLE playground. The mobile app will be how users interact with us, which will be responsible for fetching the backend for updating information, and for scanning the nearby Bluetooth beacons to be able to localize itself.
 
+### Logical architecture
+
+![Logical Architecture](architecture_logical.png?raw=true "LogicalArchitecture")
+
 We decided to go with Django as our backend framework, and Flutter as our mobile app framework.
 
 #### Why Django?
@@ -87,14 +91,7 @@ Django is a MVC python web framework built for perfectionists with deadlines, as
 #### Why Flutter?
 Flutter is a SDK for building apps for several different platforms, but it's mainly used for building mobile apps. Flutter helps in the development of mobile apps as it lets the same codebase be used to build both apps for Android and iOS, leading developers to only needing to learn Flutter instead of two different platform development kits (Android Studio and Xcode).
 
-### Logical architecture (to do, mais uml)
-The purpose of this subsection is to document the high-level logical structure of the code, using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
-
-It can be beneficial to present the system both in a horizontal or vertical decomposition:
-* horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts; 
-* vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
-
-### Physical architecture (to do, falar de beacons)
+### Physical architecture (to do, falar de beacons, nao ha uml)
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
 
 It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
