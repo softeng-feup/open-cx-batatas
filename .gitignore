@@ -15,7 +15,9 @@ env/
 **/doc/api/
 .dart_tool/
 .flutter-plugins
+.flutter-plugins-dependencies
 .packages
+.pubspec.lock
 .pub-cache/
 .pub/
 frontend/build/
