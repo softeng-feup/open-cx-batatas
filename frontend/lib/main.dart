@@ -79,7 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> _children() {
     return [
       MapPage(),
-      //EventsPage(),
       AllEventsPage(
         eventsReady: eventsReady,
         events: events,
@@ -90,6 +89,15 @@ class _MyHomePageState extends State<MyHomePage> {
         list26: list26,
         updateBookmark: updateBookmark,
       ),
+      EventsPage(
+        eventsReady: eventsReady,
+        events: events,
+        bookmarkIds: bookmarkIds,
+        list23: list23,
+        list24: list24,
+        list25: list25,
+        list26: list26,
+      ),
       ProfilePage(),
     ];
   }
@@ -99,6 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return 'All Events';
       case 2:
+        return 'My schedule';
+      case 3:
         return 'Profile';
       default:
         return widget.title;
@@ -271,6 +281,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today), title: Text('Events')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.bookmark), title: Text('Bookmarks')),
           BottomNavigationBarItem(
             icon: new Icon(Icons.person),
             title: new Text('Profile'),

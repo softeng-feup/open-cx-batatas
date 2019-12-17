@@ -43,16 +43,13 @@ class AllEventsPage extends StatelessWidget {
   }
 
   String getCondensedTime(Event event) {
-    var parsedStart = DateTime.parse(event.startTime);
-    var parsedEnd = DateTime.parse(event.endTime);
-    String condensed = parsedStart.hour.toString() +
+    String condensed = event.parsedStart.hour.toString() +
         ":" +
-        parsedStart.minute.toString() +
+        event.parsedStart.minute.toString() +
         "\n" +
-        parsedEnd.hour.toString() +
+        event.parsedEnd.hour.toString() +
         ":" +
-        parsedEnd.minute.toString();
-
+        event.parsedEnd.minute.toString();
     return condensed;
   }
 

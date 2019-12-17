@@ -1,102 +1,77 @@
 import 'package:flutter/material.dart';
+import 'Classes.dart';
 
 class EventsPage extends StatefulWidget {
+  EventsPage(
+      {Key key,
+      this.eventsReady,
+      this.events,
+      this.bookmarkIds,
+      this.list23,
+      this.list24,
+      this.list25,
+      this.list26})
+      : super(key: key);
+
+  bool eventsReady;
+  List<Event> events;
+  List<int> bookmarkIds;
+  List<Event> list23;
+  List<Event> list24;
+  List<Event> list25;
+  List<Event> list26;
+
   @override
   State<StatefulWidget> createState() {
     return new EventsPageState();
   }
 }
 
-class EventObject {
-  final double startTime;
-  final double endTime;
-  final int family;
-  final int index;
-  final String description;
-  final String room;
+// class Event {
+//   final double startTime;
+//   final double endTime;
+//   final String description;
+//   final String room;
+//
+//   Event(this.startTime, this.endTime, this.description, this.room);
+// }
 
-  EventObject(this.startTime, this.endTime, this.family, this.index,
-      this.description, this.room);
-}
-
-class Event {
-  final double startTime;
-  final double endTime;
-  final String description;
-  final String room;
-
-  Event(this.startTime, this.endTime, this.description, this.room);
-}
-
-List<Event> alo = [
-  new Event(1, 2, 'Lets do a Talk', 'Sala 666'),
-  new Event(1.5, 3, 'jsjsj', 'Sala 666'),
-  new Event(2, 4, 'What', 'Sala 666'),
-  new Event(5, 6, 'What', 'Sala 666')
-];
-
-class HeaderWidget extends StatelessWidget {
-  final String text;
-
-  HeaderWidget(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      height: 200,
-      alignment: Alignment.topLeft,
-      child: Text(text),
-      color: Colors.grey[300],
-    );
-  }
-}
-
-class SomeWidget extends StatelessWidget {
-  final String text;
-
-  SomeWidget(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      height: 200,
-      width: 300,
-      alignment: Alignment.topRight,
-      child: Text(text),
-      color: Colors.grey[300],
-    );
-  }
-}
-
+//List<Event> alo = [
+//  new Event(1, 2, 'Lets do a Talk', 'Sala 666'),
+//  new Event(1.5, 3, 'jsjsj', 'Sala 666'),
+//  new Event(2, 4, 'What', 'Sala 666'),
+//  new Event(5, 6, 'What', 'Sala 666')
+//];
+//
+// List<Event> alo = [
+//   new Event(
+//       id: 1,
+//       name: 'Example title',
+//       description: 'Description',
+//       startTime: '2020-03-23T01:00:00Z',
+//       endTime: '2020-03-23T02:00:00Z',
+//       updates: '',
+//       isBookmarked: true),
+//   new Event(
+//       id: 1,
+//       name: 'Example title 2',
+//       description: 'Description 2',
+//       startTime: '2020-03-23T03:00:00Z',
+//       endTime: '2020-03-23T04:00:00Z',
+//       updates: '',
+//       isBookmarked: false)
+//   // new Event(1, 2, 'Lets do a Talk', 'Sala 666'),
+//   // new Event(1.5, 3, 'jsjsj', 'Sala 666'),
+//   // new Event(2, 4, 'What', 'Sala 666'),
+//   // new Event(5, 6, 'What', 'Sala 666')
+// ];
+//
 bool three = false;
 bool four = false;
 bool five = false;
 bool six = false;
 
-Widget getTextWidgets(List<String> strings, double height) {
-  return new Column(
-      children: strings
-          .map((item) => new Expanded(
-              child: Container(
-                  height: height,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    border: Border(
-                      top: BorderSide(color: Colors.black, width: 1),
-                      right: BorderSide(color: Colors.black, width: 1),
-                      left: BorderSide(color: Colors.black, width: 1),
-                    ),
-                  ),
-                  child: Text(
-                    item,
-                    textAlign: TextAlign.left,
-                  ))))
-          .toList());
-}
-
-class EventsPageState extends State<StatefulWidget> {
+class EventsPageState extends State<EventsPage> {
   Widget createEvent(double stackWidth, double startTime, double endTime,
       int index, int family, String text, String room) {
     return new Positioned(
@@ -139,6 +114,27 @@ class EventsPageState extends State<StatefulWidget> {
                 )),
           ],
         ));
+  }
+
+  Widget getTextWidgets(List<String> strings, double height) {
+    return new Column(
+        children: strings
+            .map((item) => new Expanded(
+                child: Container(
+                    height: height,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      border: Border(
+                        top: BorderSide(color: Colors.black, width: 1),
+                        right: BorderSide(color: Colors.black, width: 1),
+                        left: BorderSide(color: Colors.black, width: 1),
+                      ),
+                    ),
+                    child: Text(
+                      item,
+                      textAlign: TextAlign.left,
+                    ))))
+            .toList());
   }
 
   void setThree() {
@@ -205,11 +201,6 @@ class EventsPageState extends State<StatefulWidget> {
     '24h00'
   ];
 
-  final List<String> events = <String>[
-    'JavaScript Workshop - B323',
-    '3D Printing Talk - B002',
-  ];
-
   @override
   Widget build(BuildContext context) {
     double viewWidth = MediaQuery.of(context).size.width;
@@ -220,18 +211,19 @@ class EventsPageState extends State<StatefulWidget> {
     List<List<Event>> makeFamilies(List<Event> allEvents) {
       List<List<Event>> eventsList = [[]];
       bool isFamily = false;
-      double startTime;
-      double maxEndTime;
+      int startTime;
+      int maxEndTime;
       int x = 0;
       int y = -1;
       for (int i = 0; i < allEvents.length; i++) {
         Event elem = allEvents[i];
 
         if (isFamily) {
-          if (elem.startTime >= startTime && elem.startTime <= maxEndTime) {
+          if (elem.parsedStart.hour >= startTime &&
+              elem.parsedEnd.hour <= maxEndTime) {
             ++x;
-            if (elem.endTime > maxEndTime) {
-              maxEndTime = elem.endTime;
+            if (elem.parsedEnd.hour > maxEndTime) {
+              maxEndTime = elem.parsedEnd.hour;
             }
             eventsList[y].add(elem);
           } else {
@@ -242,8 +234,8 @@ class EventsPageState extends State<StatefulWidget> {
           List<Event> lista = [];
           x = 0;
           y++;
-          maxEndTime = elem.endTime;
-          startTime = elem.startTime;
+          maxEndTime = elem.parsedEnd.hour;
+          startTime = elem.parsedEnd.hour;
           eventsList.add(lista);
           eventsList[y].add(elem);
           isFamily = true;
@@ -254,21 +246,31 @@ class EventsPageState extends State<StatefulWidget> {
 
     List<Positioned> getEvents(List<Event> events) {
       List<Positioned> widgetsEvents = [];
-      List<List<Event>> listOfLists = makeFamilies(events);
+
+      List<Event> bookmarkedEvents = new List();
+      for (var i = 0; i < events.length; i++) {
+        if (events[i].isBookmarked) {
+          bookmarkedEvents.add(events[i]);
+        }
+      }
+
+      List<List<Event>> listOfLists = makeFamilies(bookmarkedEvents);
+
       for (int i = 0; i < listOfLists.length; i++) {
         for (int j = 0; j < listOfLists[i].length; j++) {
           Event event = listOfLists[i][j];
           Positioned widgetEvent = createEvent(
               stackWidth,
-              hourHeight * event.startTime,
-              hourHeight * event.endTime,
+              hourHeight * event.parsedStart.hour,
+              hourHeight * event.parsedEnd.hour,
               j,
               listOfLists[i].length,
-              event.description,
-              event.room);
+              event.name,
+              "na sala b200");
           widgetsEvents.add(widgetEvent);
         }
       }
+
       return widgetsEvents;
     }
 
@@ -286,7 +288,7 @@ class EventsPageState extends State<StatefulWidget> {
                       Expanded(
                           flex: 13,
                           child: Stack(
-                            children: getEvents(alo),
+                            children: getEvents(widget.events),
                           ))
                     ])),
               )),

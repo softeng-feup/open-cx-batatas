@@ -25,6 +25,14 @@ class Event {
     return this.isBookmarked;
   }
 
+  DateTime get parsedStart {
+    return DateTime.parse(this.startTime);
+  }
+
+  DateTime get parsedEnd {
+    return DateTime.parse(this.endTime);
+  }
+
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
         id: json['id'],
