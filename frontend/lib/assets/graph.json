@@ -1,0 +1,37 @@
+[
+  {
+    "name" : "B001",
+    "floor" : 0,
+    "latitude" : 41.177782,
+    "longitude" : -8.595767,
+    "type" : "room"
+  },
+  {
+    "name" : "B002",
+    "floor" : 0,
+    "latitude" : 41.177737,
+    "longitude" : -8.595684,
+    "type" : "room"
+  },
+  {
+    "name" : "B003",
+    "floor" : 0,
+    "latitude" : 41.177681,
+    "longitude" : -8.595626,
+    "type" : "room"
+  },
+  {
+    "name" : "Coffee Ni",
+    "floor" : 3,
+    "latitude" : 41.177497,
+    "longitude" : -8.596020,
+    "type" : "coffee"
+  },
+  {
+    "name" : "Stairs1",
+    "floor" : 0,
+    "latitude" : 41.177847,
+    "longitude" : -8.597148,
+    "type" : "stairs"
+  }
+]

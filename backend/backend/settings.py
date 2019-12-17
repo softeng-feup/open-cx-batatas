@@ -25,7 +25,7 @@ SECRET_KEY = 'et#9&mhbqjlpy-5%#on4qbm%rfaw%33m-0p4gf@poq*tlnjja&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['diogo98s.pythonanywhere.com']
+ALLOWED_HOSTS = ['diogo98s.pythonanywhere.com', 'localhost']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'core',
     'frontend_example',
@@ -130,3 +131,13 @@ AUTH_USER_MODEL = 'core.User'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+if DEBUG:
+    SESSION_AUTH_STR = 'rest_framework.authentication.SessionAuthentication'
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'].append(SESSION_AUTH_STR)

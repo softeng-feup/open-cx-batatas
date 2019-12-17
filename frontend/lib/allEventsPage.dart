@@ -1,76 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'Classes.dart';
 
-class AllEventsPage extends StatefulWidget {
-  AllEventsPage({Key key}) : super(key: key);
-  @override
-  _AllEventsPageState createState() => _AllEventsPageState();
-}
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 
-class _AllEventsPageState extends State<AllEventsPage> {
-  // Color _iconColor = Colors.black38;
-  var cores = {};
-  var isEnabled = {};
+typedef UpdateBookmark = void Function({int eventId, bool isBookmarked});
 
-  Widget _buildList() => ListView(
-        // this is from backend events
-        children: [
-          _tile(
-              'Registration',
-              'Register to receive your accredition at this week.',
-              '09:00\n10:00',
-              1),
-          _tile('Big Data Today', 'An prespective with Zé Manel',
-              '10:00\n10:20', 2),
-          _tile('The end of Blockchain', 'CEO from ABBT', '10:20\n10:50', 3),
-          _tile(
-              'JavaScript Workshop',
-              'Learn how to programe in Js, just for begginers.',
-              '11:00\n12:00',
-              4),
-          _tile(
-              'Do you need a router?',
-              'Workshop about configure a router by Cisco ',
-              '12:00\n13:00',
-              5),
-          Divider(),
-          _tile('Lunch Time', 'Meet in coffe-lunch', '', 6),
-          Divider(),
-          _tile('The Future Today', 'CTO from Airbnb', '14:00\n14:40', 7),
-          _tile('Robot from the past', 'CEO from IBM', '14:40\n15:00', 8),
-          _tile('Build a robot', 'Learn how to build a robot, IBM',
-              '15:00\n16:20', 9),
-          _tile('React Native', 'For begginers by Natixis', '16:00\n17:30', 10),
-        ],
-      );
+class AllEventsPage extends StatelessWidget {
+  AllEventsPage(
+      {Key key,
+      this.eventsReady,
+      this.events,
+      this.bookmarkIds,
+      this.list23,
+      this.list24,
+      this.list25,
+      this.list26,
+      this.updateBookmark})
+      : super(key: key);
 
-  ListTile _tile(String title, String subtitle, String time, int myKey) {
-    var defaultColor = Colors.black38;
-    if (!cores.containsKey(myKey)) {
-      cores[myKey] = defaultColor;
+  bool eventsReady;
+  List<Event> events;
+  List<int> bookmarkIds;
+  List<Event> list23;
+  List<Event> list24;
+  List<Event> list25;
+  List<Event> list26;
+  final UpdateBookmark updateBookmark;
+
+  Widget dayList(List<Event> dayList) {
+    final List<ListTile> dayTiles = new List();
+
+    for (var i = 0; i < dayList.length; i++) {
+      dayTiles.add(eventTile(dayList[i]));
     }
 
+    return ListView(children: dayTiles);
+  }
+
+  String getCondensedTime(Event event) {
+    var parsedStart = DateTime.parse(event.startTime);
+    var parsedEnd = DateTime.parse(event.endTime);
+    String condensed = parsedStart.hour.toString() +
+        ":" +
+        parsedStart.minute.toString() +
+        "\n" +
+        parsedEnd.hour.toString() +
+        ":" +
+        parsedEnd.minute.toString();
+
+    return condensed;
+  }
+
+  ListTile eventTile(Event event) {
+    var iconColor = Colors.black38;
+
+    if (event.isBookmarked) {
+      iconColor = Colors.orange;
+    }
+
+    // print(event.description);
+
     return ListTile(
-      //key: myKey,
-      title: Text(title,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 20,
-          )),
-      subtitle: Text(subtitle),
-      leading: Text(time),
+      title: Padding(
+          padding: EdgeInsets.only(top: 8),
+          child: Text(event.name,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 20,
+              ))),
+      subtitle: Padding(
+          padding: EdgeInsets.only(top: 10), child: Text(event.description)),
+      leading: Text(getCondensedTime(event)),
       trailing: IconButton(
-        icon: Icon(Icons.calendar_today, color: cores[myKey]),
+        icon: Icon(Icons.calendar_today, color: iconColor),
         onPressed: () {
-          print('fui carregado em ' + myKey.toString());
-          setState(() {
-            if (isEnabled.containsKey(myKey)) {
-              cores.remove(myKey);
-              isEnabled.remove(myKey);
-            } else {
-              isEnabled[myKey] = true;
-              cores[myKey] = Colors.black;
-            }
-          });
+          bool isBookmarked = event.toggleBookmark();
+          updateBookmark(eventId: event.id, isBookmarked: isBookmarked);
         },
       ),
     );
@@ -78,25 +88,34 @@ class _AllEventsPageState extends State<AllEventsPage> {
 
   @override
   Widget build(BuildContext context) {
-    //"draw" method
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            tabs: [
-              Tab(text: '23 Mon'),
-              Tab(text: '24 Tue'),
-              Tab(text: '25 Wen'),
-              Tab(text: '26 Thu'),
+    if (eventsReady) {
+      return DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          appBar: AppBar(
+              flexibleSpace:
+                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            TabBar(
+              tabs: [
+                Tab(text: '23 Mon'),
+                Tab(text: '24 Tue'),
+                Tab(text: '25 Wen'),
+                Tab(text: '26 Thu'),
+              ],
+            ),
+          ])),
+          body: TabBarView(
+            children: [
+              dayList(list23),
+              dayList(list24),
+              dayList(list25),
+              dayList(list26)
             ],
           ),
-          title: Text('All events'),
         ),
-        body: TabBarView(
-          children: [_buildList(), _buildList(), _buildList(), _buildList()],
-        ),
-      ),
-    );
+      );
+    } else {
+      return Container(color: Colors.white);
+    }
   }
 }

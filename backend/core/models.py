@@ -20,7 +20,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=50)
     last_name = models.CharField(_('last name'), max_length=50)
     email = models.EmailField(_('email address'), unique=True)
-    date_of_birth = models.DateField(_('date of birth'))
     GENDER_CHOICES = (
         ('MALE', _('Male')),
         ('FEMALE', _('Female')),
@@ -29,13 +28,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     gender = models.CharField(_("gender"), max_length=6, choices=GENDER_CHOICES,
                               default='', blank=True)
+    # profile
+    position = models.CharField(max_length=30, null=True, blank=True)
+    company = models.CharField(max_length=30, null=True, blank=True)
+    is_speaker = models.BooleanField(default=False)
+
     is_active = models.BooleanField(_('active'), default=True)
     email_confirmed = models.BooleanField(default=False)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
 
     objects = UserManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'username', 'date_of_birth']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     def __str__(self):
         return self.get_full_name()
@@ -74,12 +78,15 @@ class Location(models.Model):
     Location model.
     Used for building direction maps.
     """
-    x = models.FloatField()
-    y = models.FloatField()
-    z = models.FloatField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    floor = models.SmallIntegerField()
+    # x = models.FloatField()
+    # y = models.FloatField()
+    # z = models.FloatField()
 
     def __str__(self):
-        return '[{}, {}, {}]'.format(self.x, self.y, self.z)
+        return '[{}, {}, floor_{}]'.format(self.latitude, self.longitude, self.floor)
 
 
 class Beacon(models.Model):
@@ -87,11 +94,12 @@ class Beacon(models.Model):
     Beacon model.
     Used in the implementation of direction maps.
     """
+    mac_address = models.CharField(max_length=17)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
-    isActive = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return '[{},{}]'.format(self.id, self.isActive)
+        return '[{},{}]'.format(self.id, self.is_active)
 
 
 class Tag(models.Model):
@@ -105,16 +113,35 @@ class Tag(models.Model):
         return '{}'.format(self.name)
 
 
-class Room(models.Model):
+class Place(models.Model):
     """
     Room model.
     Used as the location of events.
     """
     name = models.CharField(max_length=30)
-    bealocation = models.ManyToManyField(Beacon) # geolocation of beacons
+    location = models.ForeignKey(Location, on_delete=models.PROTECT)
+    PLACE_TYPES = (
+        ('ROOM', _('Room')),
+        ('COFFEE', _('Coffee')),
+        ('STAIRS', _('Stairs')),
+        ('JOINT', _('Joint')),
+        ('', _('Undefined')),
+    )
+    place_type = models.CharField(_("type"), max_length=10, choices=PLACE_TYPES,
+                                  default='', blank=True)
+    # bealocation = models.ManyToManyField(Beacon) # geolocation of beacons
 
     def __str__(self):
         return '{}'.format(self.name)
+
+
+class MapEdge(models.Model):
+    """
+    Map edge model.
+    Used for building the direction graph.
+    """
+    vertex1 = models.ForeignKey(Place, related_name='vertex1', on_delete=models.CASCADE)
+    vertex2 = models.ForeignKey(Place, related_name='vertex2', on_delete=models.CASCADE)
 
 
 class Event(models.Model):
@@ -124,13 +151,25 @@ class Event(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
-    room = models.ForeignKey(Room, on_delete=models.PROTECT)
+    room = models.ForeignKey(Place, on_delete=models.PROTECT)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     updates = models.TextField(null=True, blank=True, default=None)
 
     def __str__(self):
         return '{}'.format(self.name)
+
+
+class Bookmarks(models.Model):
+    """
+    Bookmarks model.
+    Used for bookmarking events.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} -> {}'.format(self.user, self.event.name)
 
 
 class Notification(models.Model):
