@@ -125,7 +125,11 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title, style: TextStyle(fontFamily: 'Fontin Sans')),
       ),
-      body: _children[_currentIndex],
+      // body: _children[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _children,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: changePage,
         type: BottomNavigationBarType
