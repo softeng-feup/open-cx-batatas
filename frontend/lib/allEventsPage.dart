@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'Classes.dart';
+
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AllEventsPage extends StatefulWidget {
   AllEventsPage({Key key}) : super(key: key);
@@ -12,6 +16,7 @@ class AllEventsPage extends StatefulWidget {
 
 class _AllEventsPageState extends State<AllEventsPage> {
   List<Event> events = new List();
+  List<int> bookmarkIds = new List();
 
   List<Event> list23 = new List();
   List<Event> list24 = new List();
@@ -21,27 +26,66 @@ class _AllEventsPageState extends State<AllEventsPage> {
   @override
   void initState() {
     super.initState();
+    // TODO: add loading state
     fetchEvents();
   }
 
   void fetchEvents() async {
-    final response =
-        await http.get('http://diogo98s.pythonanywhere.com/api/v1/events/');
+    final response = await http.get(
+        'http://diogo98s.pythonanywhere.com/api/v1/events/',
+        headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
-      var numEvents = jsonDecode(response.body).length;
+      var utf8Data = utf8.decode(response.bodyBytes);
+      var numEvents = jsonDecode(utf8Data).length;
+
+      await updateBookmarksFromStorage();
+
       for (var i = 0; i < numEvents; i++) {
         Map<String, dynamic> jsonData = json.decode(response.body)[i];
-        jsonData['is_bookmarked'] =
-            false; // FIXME: add real value read from localStorage
+
+        if (bookmarkIds.contains(jsonData['id'])) {
+          jsonData['is_bookmarked'] = true;
+        } else {
+          jsonData['is_bookmarked'] = false;
+        }
+
         events.add(Event.fromJson(jsonData));
       }
+
       setState(() {
         buildDayLists();
       });
     } else {
       throw Exception('Failed to fetch events');
     }
+  }
+
+  /* Updates bookmarks information from storage */
+  Future updateBookmarksFromStorage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    File bookmarksFile = File('$path/bookmarks.txt'); // TODO: add to Constants
+
+    try {
+      String bookmarksFileContents = await bookmarksFile.readAsString();
+      Map<String, dynamic> bookmarksJson = json.decode(bookmarksFileContents);
+
+      int numBookmarks = bookmarksJson['bookmarks'].length;
+      for (var i = 0; i < numBookmarks; i++) {
+        bookmarkIds.add(bookmarksJson['bookmarks'][i]);
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* Saves bookmarks information to storage */
+  void saveBookmarksToStorage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    File bookmarksFile = File('$path/bookmarks.txt'); // TODO: add to Constants
+    bookmarksFile.writeAsString(json.encode({'bookmarks': bookmarkIds}));
   }
 
   void buildDayLists() {
@@ -61,6 +105,19 @@ class _AllEventsPageState extends State<AllEventsPage> {
         list26.add(events[i]);
       }
     }
+  }
+
+  void updateBookmark({int eventId, bool isBookmarked}) {
+    if (isBookmarked) {
+      if (!bookmarkIds.contains(eventId)) {
+        bookmarkIds.add(eventId);
+      }
+    } else {
+      if (bookmarkIds.contains(eventId)) {
+        bookmarkIds.remove(eventId);
+      }
+    }
+    saveBookmarksToStorage();
   }
 
   Widget dayList(List<Event> dayList) {
@@ -94,6 +151,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
       iconColor = Colors.orange;
     }
 
+    // print(event.description);
+
     return ListTile(
       //key: myKey,
       title: Text(event.name,
@@ -107,7 +166,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
         icon: Icon(Icons.calendar_today, color: iconColor),
         onPressed: () {
           setState(() {
-            event.toggleBookmark();
+            bool isBookmarked = event.toggleBookmark();
+            updateBookmark(eventId: event.id, isBookmarked: isBookmarked);
           });
         },
       ),

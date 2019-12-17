@@ -16,12 +16,13 @@ class Event {
       this.updates,
       this.isBookmarked});
 
-  void toggleBookmark() {
+  bool toggleBookmark() {
     if (this.isBookmarked) {
       this.isBookmarked = false;
     } else {
       this.isBookmarked = true;
     }
+    return this.isBookmarked;
   }
 
   factory Event.fromJson(Map<String, dynamic> json) {
