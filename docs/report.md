@@ -106,7 +106,7 @@ In this subsection please describe in more detail which, and how, user(s) story(
 
 ---
 
-## Implementation (to do, nao sei bem o que pôr aqui, talvez nao é preciso nada)
+## Implementation
 To understand the Implementation and structure of our project it is important to know that it has been divided into 3 independent part, which correspond to in-app pages, accessibble through the bottom bar.
 Depending on which button is selected a different body will be displayed here:: https://github.com/softeng-feup/open-cx-batatas/blob/b064b77c44782337e48ead2d43d5d9ab86aba297/frontend/lib/main.dart#L259-L262
 
@@ -120,11 +120,11 @@ Depending on which button is selected a different body will be displayed here:: 
  On the backend we've determined that everything is self explanatory, as such there's no need for further explanations.
 
 ---
-## Test (to do)
+## Test
 During the development of this project we resorted to Gherkin to create tests for each feature. These tests can be seen in the description of each user story, which were created on [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2401872).
 
 ---
-## Configuration and change management (to do)
+## Configuration and change management
 When developing this project we created several seperations through the use of branches. Namely between the frontend and backend.
 Inside the frontend we also seperated each page in its own branch, so make it easier to make each feature independent from one another.
 In the end we've merged everything on the master branch to make it ready for release.
@@ -132,4 +132,4 @@ In the end we've merged everything on the master branch to make it ready for rel
 ---
 
 ## Project management
-In this project we didn't use a specific platform to keep track of our progress, we comunicated in a chat with all of the team members and with the resources we organized in our [wiki](https://github.com/softeng-feup/open-cx-batatas/wiki), we were on a stable track from the beginning. In the wiki, we had [mockups](https://github.com/softeng-feup/open-cx-batatas/wiki/Mockup) and [information on the technologies](https://github.com/softeng-feup/open-cx-batatas/wiki/Learning-material) we were using, some for the very first time.
+In this project we used Pivotal Tracker to manage our progress and assign tasks to people, we also comunicated in a chat with all of the team members and with the resources we organized in our [wiki](https://github.com/softeng-feup/open-cx-batatas/wiki), we were on a stable track from the beginning. In the wiki, we had [mockups](https://github.com/softeng-feup/open-cx-batatas/wiki/Mockup) and [information on the technologies](https://github.com/softeng-feup/open-cx-batatas/wiki/Learning-material) we were using, some for the very first time.
