@@ -50,11 +50,7 @@ Solution: We aim to build an internal positioning system to connect people with 
 Resources: We'll need at least 3 Raspberry Pi or 3 Bluetooth low energy beacons to build our prototype.
 
 ---
-## Requirements (to do)
-
-In this section, you should describe all kinds of requirements for your module: functional and non-functional requirements.
-
-Start by contextualizing your module, describing the main concepts, terms, roles, scope and boundaries of the application domain addressed by the project.
+## Requirements
 
 ### Use case diagram (to do, tem imagem so)
 ![Actors involved with the app](actors.png?raw=true "Actors")
@@ -96,10 +92,12 @@ The goal of this subsection is to document the high-level physical structure of 
 
 It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
 
-### Prototype (to do)
-To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
+### Prototype (to do, verify)
+Our application allows a user to get direction to any class a lecture/workshop is taking place by typing in the room in the search bar to compute the path.
 
-In this subsection please describe in more detail which, and how, user(s) story(ies) were implemented.
+This means that we concluded almost every user story we planed to do. Unfortunately we had to choose to leave the ability to connect users with each other and diferenciate different types of users (speaker, attendee).
+
+However all the other user stories were concluded with success.
 
 ---
 
