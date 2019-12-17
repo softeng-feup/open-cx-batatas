@@ -156,6 +156,9 @@ class Event(models.Model):
     end_time = models.DateTimeField()
     updates = models.TextField(null=True, blank=True, default=None)
 
+    class Meta:
+        ordering = ['start_time']
+
     def __str__(self):
         return '{}'.format(self.name)
 
