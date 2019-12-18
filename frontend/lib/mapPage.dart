@@ -77,6 +77,8 @@ class MapController extends State<MapPage> {
   /* Will hold scan results */
   final results = <String, ScanResult>{};
 
+  Place nextLocation;
+
   /* Will hold available beacons */
   List<Beacon> beacons = new List<Beacon>();
   List<Place> places = new List<Place>();
@@ -183,91 +185,97 @@ class MapController extends State<MapPage> {
     // print(beacons[2].lastSeen);
     // print(beacons[2].distance);
     // print('\n\n\n');
-    return places
-        .where((place) =>
-            place.name.toLowerCase().contains(searchStr.toLowerCase()) &&
-            place is Room)
-        .toList();
+    return places.where((place) =>
+            place.name.toLowerCase().contains(searchStr.toLowerCase()) && place is Room).toList();
   }
 
   Container getMapContainer() {
     return Container(
         alignment: Alignment.center,
-        child: Stack(
-          children: <Widget>[
-            GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: _feupPosition,
-              minMaxZoomPreference: zoomPreference,
-              myLocationEnabled: true,
-              indoorViewEnabled: true,
-              compassEnabled: false,
-              myLocationButtonEnabled: true,
-              cameraTargetBounds: cameraBounds,
-              onMapCreated: (GoogleMapController controller) {
-                controller.setMapStyle(_mapStyle);
-                _controller.complete(controller);
-              },
-              circles: circles,
-              markers: markerSet,
-              polylines: routeSet,
-              mapToolbarEnabled: true,
-            ),
-            Center(
-              heightFactor: 1,
-              child: ListTileTheme(
-                style: ListTileStyle.list,
-                iconColor: Colors.blue,
-                selectedColor: Colors.red,
-                child: Container(
-                  width: 360,
-                  height: 300,
-                  child: SearchBar(
-                    //searchBarController: _searchBarController,
-                    iconActiveColor: Colors.blue,
-                    hintText: "Search location here",
-                    hintStyle: TextStyle(
-                      color: Color.fromRGBO(212, 212, 212, 1),
-                    ),
-                    textStyle: TextStyle(
-                      color: Colors.black,
-                    ),
-                    placeHolder: SizedBox.shrink(),
-                    loader: SizedBox.shrink(),
-                    mainAxisSpacing: 10,
-                    searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
-                    listPadding: EdgeInsets.symmetric(horizontal: 10),
-                    onSearch: search,
-                    onItemFound: (Place place, int index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          border: Border.fromBorderSide(
-                              BorderSide(color: Colors.blue)),
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                        ),
-                        child: ListTile(
-                          title: Text(place.type + place.name),
-                          subtitle: Text("Floor: " + place.floor.toString()),
-                          onTap: () {
-                            this.markLocation(place);
-                          },
-                          trailing:
-                              Icon(Icons.location_on, color: Colors.deepOrange),
-                        ),
-                      );
-                    },
-                    searchBarStyle: SearchBarStyle(
-                      backgroundColor: Color.fromRGBO(255, 255, 255, .95),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      padding: EdgeInsets.all(5.0),
+        child: Scaffold(
+          floatingActionButtonLocation: _EndFloatFabLocation(),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.blueAccent,
+            elevation: 0,
+            onPressed: () => {this.calculateRoute(this.nextLocation)},
+            child: Icon(Icons.navigation),
+          ),
+          body: Stack(
+            children: <Widget>[
+              GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: _feupPosition,
+                minMaxZoomPreference: zoomPreference,
+                myLocationEnabled: false,
+                indoorViewEnabled: true,
+                compassEnabled: false,
+                myLocationButtonEnabled: false,
+                cameraTargetBounds: cameraBounds,
+                onMapCreated: (GoogleMapController controller) {
+                  controller.setMapStyle(_mapStyle);
+                  _controller.complete(controller);
+                },
+                circles: circles,
+                markers: markerSet,
+                polylines: routeSet,
+                mapToolbarEnabled: true,
+              ),
+              Center(
+                heightFactor: 1,
+                child: ListTileTheme(
+                  style: ListTileStyle.list,
+                  iconColor: Colors.blue,
+                  selectedColor: Colors.red,
+                  child: Container(
+                    width: 360,
+                    height: 300,
+                    child: SearchBar(
+                      //searchBarController: _searchBarController,
+                      iconActiveColor: Colors.blue,
+                      hintText: "Search location here",
+                      hintStyle: TextStyle(
+                        color: Color.fromRGBO(212, 212, 212, 1),
+                      ),
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                      ),
+                      placeHolder: SizedBox.shrink(),
+                      loader: SizedBox.shrink(),
+                      mainAxisSpacing: 10,
+                      searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
+                      listPadding: EdgeInsets.symmetric(horizontal: 10),
+                      onSearch: search,
+                      onItemFound: (Place place, int index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            border: Border.fromBorderSide(
+                                BorderSide(color: Colors.blue)),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          child: ListTile(
+                            title: Text(place.type + place.name),
+                            subtitle: Text("Floor: " + place.floor.toString()),
+                            onTap: () {
+                              this.markLocation(place);
+                            },
+                            trailing:
+                            Icon(Icons.location_on, color: Colors.deepOrange),
+                          ),
+                        );
+                      },
+                      searchBarStyle: SearchBarStyle(
+                        backgroundColor: Color.fromRGBO(255, 255, 255, .95),
+                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        padding: EdgeInsets.all(5.0),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ));
+            ],
+          )),
+        );
   }
 
   Container getLoadingContainer() {
@@ -294,7 +302,8 @@ class MapController extends State<MapPage> {
                 size: 60, color: Colors.lightBlue),
             SizedBox(height: 20),
             Text(
-              Constants.locationMissingStr,
+              "location Missing String Not in Constants so idk",
+              //Constants.locationMissingStr, //TODO FIX THIS!!
               style: TextStyle(color: Colors.black, fontSize: 16),
               textAlign: TextAlign.center,
             ),
@@ -364,12 +373,13 @@ class MapController extends State<MapPage> {
 
   void markLocation(Place place) async {
     setState(() {
+      routeSet.clear();
+      this.nextLocation = place;
       markerSet.clear();
       Marker marker = Marker(
           position: LatLng(place.latitude, place.longitude),
           markerId: MarkerId("markedLocation"),
-          icon: BitmapDescriptor.defaultMarkerWithHue(15),
-          onTap: () => this.calculateRoute(place));
+          icon: BitmapDescriptor.defaultMarkerWithHue(15));
       markerSet.add(marker);
     });
 
@@ -504,18 +514,68 @@ class MapController extends State<MapPage> {
   void updateUserLocation() async {
     setState(() {
       circles.clear();
-      Circle circle = Circle(
+      Circle circleRadius = Circle(
         circleId: CircleId("1"),
+        center: LatLng(_user.latitude, _user.longitude),
+        radius: 4,
+        visible: true,
+        fillColor: Colors.blue[200],
+        strokeWidth: 0,
+        zIndex: 1,
+      );
+
+      Circle circle = Circle(
+        circleId: CircleId("2"),
         center: LatLng(_user.latitude, _user.longitude),
         radius: 2,
         visible: true,
         fillColor: Colors.blue,
-        strokeColor: Colors.deepOrange,
+        strokeColor: Colors.white,
         strokeWidth: 2,
         zIndex: 1,
       );
 
+      circles.add(circleRadius);
       circles.add(circle);
     });
+  }
+}
+
+class _EndFloatFabLocation extends FloatingActionButtonLocation {
+  const _EndFloatFabLocation();
+
+  final double margin = 15.0;
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    // Compute the x-axis offset.
+    double fabX;
+    assert(scaffoldGeometry.textDirection != null);
+    switch (scaffoldGeometry.textDirection) {
+      case TextDirection.rtl:
+      // In RTL, the end of the screen is the left.
+        final double endPadding = scaffoldGeometry.minInsets.left;
+        fabX = margin + endPadding;
+        break;
+      case TextDirection.ltr:
+      // In LTR, the end of the screen is the right.
+        final double endPadding = scaffoldGeometry.minInsets.right;
+        fabX = margin + endPadding;
+        break;
+    }
+
+    // Compute the y-axis offset.
+    final double contentBottom = scaffoldGeometry.contentBottom;
+    final double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+    final double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+    final double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+
+    double fabY = contentBottom - fabHeight - 16.0;
+    if (snackBarHeight > 0.0)
+      fabY = min(fabY, contentBottom - snackBarHeight - fabHeight - margin);
+    if (bottomSheetHeight > 0.0)
+      fabY = min(fabY, contentBottom - bottomSheetHeight - fabHeight / 2.0);
+
+    return new Offset(fabX, fabY);
   }
 }

@@ -11,12 +11,12 @@ Future<List<Beacon>> fetchBeacons() async {
 }
 
 Future<List<Place>> fetchPlaces() async {
-  final res = await http.get(Constants.API_URL + '/api/v1/places/');
+  final res = await http.get(Constants.API_URL + 'places/');
   var data = json.decode(res.body) as List;
 
   List<Place> places = data.map<Place>((json) => Place.fromJSON(json)).toList();
 
-  final edges = await http.get(Constants.API_URL + '/api/v1/edges/');
+  final edges = await http.get(Constants.API_URL + 'edges/');
   var edgeData = json.decode(edges.body) as List;
 
   //Go through every edge and get the origin from places and add the des
