@@ -56,7 +56,7 @@ In this section, you should describe all kinds of requirements for your module: 
 
 Start by contextualizing your module, describing the main concepts, terms, roles, scope and boundaries of the application domain addressed by the project.
 
-### Use case diagram (to do, tem imagem so)
+### Use case diagram
 ![Use case diagram](usecases.png?raw=true "usecases")
 
 
