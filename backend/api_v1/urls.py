@@ -13,6 +13,7 @@ urlpatterns = [
     path('places/', views.PlaceList.as_view()),
     path('edges/', views.MapEdgeList.as_view()),
     path('beacons/', views.BeaconList.as_view()),
+    path('users/', views.UserList.as_view()),
 
     # Authentication
     path('auth/login/', views.sign_in),

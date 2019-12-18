@@ -10,7 +10,8 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from core.models import Location, Tag,\
                         Notification, Place,\
-                        Event, Beacon, MapEdge
+                        Event, Beacon, MapEdge,\
+                        User
 from .serializers import LocationSerializer, TagSerializer,\
                          EventSerializer, NotificationSerializer,\
                          PlaceSerializer, BeaconSerializer,\
@@ -98,6 +99,22 @@ class PlaceList(mixins.ListModelMixin,
     """
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handler for GET requests.
+
+        Lists all the places.
+        """
+        return self.list(request, *args, **kwargs)
+
+class UserList(mixins.ListModelMixin,
+               generics.GenericAPIView):
+    """
+    Lists all places.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
 
     def get(self, request, *args, **kwargs):
         """
