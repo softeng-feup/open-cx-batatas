@@ -199,8 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void fetchEvents() async {
-    final response = await http.get(
-        'http://diogo98s.pythonanywhere.com/api/v1/events/',
+    final response = await http.get(Constants.API_URL + 'events/',
         headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
@@ -251,7 +250,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Scaffold get normalScreen {
     return Scaffold(
-
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.

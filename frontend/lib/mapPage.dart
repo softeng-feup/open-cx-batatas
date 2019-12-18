@@ -9,7 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'constants.dart' as Constants;
+import 'Constants.dart' as Constants;
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rx_ble/rx_ble.dart';
@@ -185,14 +185,17 @@ class MapController extends State<MapPage> {
     // print(beacons[2].lastSeen);
     // print(beacons[2].distance);
     // print('\n\n\n');
-    return places.where((place) =>
-            place.name.toLowerCase().contains(searchStr.toLowerCase()) && place is Room).toList();
+    return places
+        .where((place) =>
+            place.name.toLowerCase().contains(searchStr.toLowerCase()) &&
+            place is Room)
+        .toList();
   }
 
   Container getMapContainer() {
     return Container(
-        alignment: Alignment.center,
-        child: Scaffold(
+      alignment: Alignment.center,
+      child: Scaffold(
           floatingActionButtonLocation: _EndFloatFabLocation(),
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.blueAccent,
@@ -259,8 +262,8 @@ class MapController extends State<MapPage> {
                             onTap: () {
                               this.markLocation(place);
                             },
-                            trailing:
-                            Icon(Icons.location_on, color: Colors.deepOrange),
+                            trailing: Icon(Icons.location_on,
+                                color: Colors.deepOrange),
                           ),
                         );
                       },
@@ -275,7 +278,7 @@ class MapController extends State<MapPage> {
               ),
             ],
           )),
-        );
+    );
   }
 
   Container getLoadingContainer() {
@@ -553,12 +556,12 @@ class _EndFloatFabLocation extends FloatingActionButtonLocation {
     assert(scaffoldGeometry.textDirection != null);
     switch (scaffoldGeometry.textDirection) {
       case TextDirection.rtl:
-      // In RTL, the end of the screen is the left.
+        // In RTL, the end of the screen is the left.
         final double endPadding = scaffoldGeometry.minInsets.left;
         fabX = margin + endPadding;
         break;
       case TextDirection.ltr:
-      // In LTR, the end of the screen is the right.
+        // In LTR, the end of the screen is the right.
         final double endPadding = scaffoldGeometry.minInsets.right;
         fabX = margin + endPadding;
         break;
