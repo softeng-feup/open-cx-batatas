@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'Classes.dart';
+import 'package:flutter/material.dart';
+import 'colors.dart';
 
 class EventsPage extends StatefulWidget {
   EventsPage({
@@ -79,7 +81,7 @@ class EventsPageState extends State<EventsPage> {
                     child: Container(
                         height: endTime - startTime,
                         decoration: BoxDecoration(
-                          color: Colors.indigo,
+                          color: MaterialColor(0xff0f2f7f, programmingColor),
                           border: Border.all(
                             color: Colors.black,
                             width: 1,
@@ -89,7 +91,7 @@ class EventsPageState extends State<EventsPage> {
                               topLeft: Radius.circular(10.0)),
                         ),
                         width: stackWidth,
-                        child: Text(text, textAlign: TextAlign.center))),
+                        child: Text(text,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold), textAlign: TextAlign.center))),
                 Expanded(
                     flex: 5,
                     child: Container(
@@ -312,7 +314,7 @@ class EventsPageState extends State<EventsPage> {
                                 margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50.0),
-                                    color: Colors.indigo[800]),
+                                    color: MaterialColor(0xff0f2f7f, programmingColor)),
                                 child: Row(
                                   children: <Widget>[
                                     Expanded(
