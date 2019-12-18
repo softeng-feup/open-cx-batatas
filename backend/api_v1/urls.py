@@ -17,6 +17,6 @@ urlpatterns = [
 
     # Authentication
     path('auth/login/', views.sign_in),
-    path('auth/register/', views.sign_up),
+    path('auth/register/', views.sign_up, name='create-account'),
     path('profile/', views.ProfileDetail.as_view()),
 ]
