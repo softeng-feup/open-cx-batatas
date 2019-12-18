@@ -76,6 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Event> list25 = new List();
   static List<Event> list26 = new List();
 
+  static bool currentUserReady = false;
+  static User currentUser;
+
   List<Widget> _children() {
     return [
       MapPage(),
@@ -93,7 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
         eventsReady: eventsReady,
         events: events,
       ),
-      ProfilePage(),
+      ProfilePage(
+        isReady: currentUserReady,
+        user: currentUser,
+      ),
     ];
   }
 
@@ -194,8 +200,18 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       setState(() {
         currentState = 2;
+        fetchCurrentUser();
       });
     }
+  }
+
+  void fetchCurrentUser() async {
+    final userJson = await requestUserData();
+
+    setState(() {
+      currentUserReady = true;
+      currentUser = User.fromJson(userJson);
+    });
   }
 
   void fetchEvents() async {
@@ -249,12 +265,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Scaffold get normalScreen {
+    List<Widget> appbarBtns;
+
+    // For profile editing
+    if (_currentIndex == 3) {
+      appbarBtns = [
+        IconButton(
+          icon: Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+        )
+      ];
+    }
+
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(getNavTitle(), style: TextStyle(fontFamily: 'Fontin Sans')),
-      ),
+          title:
+              Text(getNavTitle(), style: TextStyle(fontFamily: 'Fontin Sans')),
+          actions: appbarBtns),
       body: IndexedStack(
         index: _currentIndex,
         children: _children(),
@@ -333,6 +362,8 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Colors.red,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIos: 2);
+
+        fetchCurrentUser();
       });
     });
   }

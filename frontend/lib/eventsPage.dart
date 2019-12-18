@@ -356,17 +356,17 @@ class EventsPageState extends State<EventsPage> {
                           ],
                         )),
                       ),
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: RawMaterialButton(
-                              onPressed: () {},
-                              shape: new CircleBorder(),
-                              fillColor: Colors.orangeAccent,
-                              child: Text('Add+'),
-                            ),
-                          )),
+                      // Expanded(
+                      //     flex: 2,
+                      //     child: Container(
+                      //       alignment: AlignmentDirectional.centerEnd,
+                      //       child: RawMaterialButton(
+                      //         onPressed: () {},
+                      //         shape: new CircleBorder(),
+                      //         fillColor: Colors.orangeAccent,
+                      //         child: Text('Add+'),
+                      //       ),
+                      //     )),
                     ],
                   )),
                 ],
