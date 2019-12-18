@@ -49,8 +49,6 @@ class MapController extends State<MapPage> {
   String _mapStyle;
 
   //TODO precisa de ter as localizações da Feup pesquisaveis e mudar para o piso correto
-  //TODO Precisa de um butão para determinar a rota para o local
-  //TODO A rota pode ser calculada usando o google maps, a unica coisa a ter em atenção são as mudanças de pisos, que terão de ser feitas com pontos intermédios nas escadas
   //TODO butão para mostar todas as maquinas de café
   //TODO dar display a localização das outras pessoas
   //TODO expandir os icons de outras pessoas para uma imagem deles e ao carregar levar para o perfil deles
@@ -192,17 +190,21 @@ class MapController extends State<MapPage> {
         .toList();
   }
 
+  Icon _navigationButtonItem = Icon(Icons.navigation);
+  bool _showNavButtonn = false;
+  bool _routeCalculated = false;
+
   Container getMapContainer() {
     return Container(
       alignment: Alignment.center,
       child: Scaffold(
           floatingActionButtonLocation: _EndFloatFabLocation(),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: _showNavButtonn ? FloatingActionButton(
             backgroundColor: Colors.blueAccent,
             elevation: 0,
-            onPressed: () => {this.calculateRoute(this.nextLocation)},
-            child: Icon(Icons.navigation),
-          ),
+            onPressed: () => {navButtonFunc()},
+            child: _navigationButtonItem,
+          ) : SizedBox(),
           body: Stack(
             children: <Widget>[
               GoogleMap(
@@ -305,8 +307,7 @@ class MapController extends State<MapPage> {
                 size: 60, color: Colors.lightBlue),
             SizedBox(height: 20),
             Text(
-              "location Missing String Not in Constants so idk",
-              //Constants.locationMissingStr, //TODO FIX THIS!!
+              Constants.locationMissingStr, //TODO FIX THIS!!
               style: TextStyle(color: Colors.black, fontSize: 16),
               textAlign: TextAlign.center,
             ),
@@ -384,6 +385,7 @@ class MapController extends State<MapPage> {
           markerId: MarkerId("markedLocation"),
           icon: BitmapDescriptor.defaultMarkerWithHue(15));
       markerSet.add(marker);
+      _showNavButtonn = true;
     });
 
     GoogleMapController controller = await _controller.future;
@@ -540,6 +542,22 @@ class MapController extends State<MapPage> {
 
       circles.add(circleRadius);
       circles.add(circle);
+    });
+  }
+
+  navButtonFunc() async {
+    setState(() {
+      if (!_routeCalculated) {
+        this.calculateRoute(this.nextLocation);
+        _routeCalculated = true;
+        _navigationButtonItem = Icon(Icons.clear);
+      } else {
+        this.routeSet.clear();
+        this.markerSet.clear();
+        _routeCalculated = false;
+        _showNavButtonn = false;
+        _navigationButtonItem = Icon(Icons.navigation);
+      }
     });
   }
 }
