@@ -59,16 +59,15 @@ Resources: We'll need at least 3 Raspberry Pi or 3 Bluetooth low energy beacons 
 ![Actors involved with the app](actors.png?raw=true "Actors")
 
 
-### User stories (to do)
+### User stories
 
-**User interface mockups**.
-After the user story text, you should add a draft of the corresponding user interfaces, a simple mockup or draft, if applicable.
-
-**Acceptance tests**.
-For each user story you should write also the acceptance tests (textually in Gherkin), i.e., a description of scenarios (situations) that will help to confirm that the system satisfies the requirements addressed by the user story.
-
-**Value and effort**.
-At the end, it is good to add a rough indication of the value of the user story to the customers (e.g. [MoSCoW](https://en.wikipedia.org/wiki/MoSCoW_method) method) and the team should add an estimation of the effort to implement it, for example, using t-shirt sizes (XS, S, M, L, XL).
+- As a user, I want to view a calendar containing all my bookmarked events so that I know what I found interesting.
+- As a user, I want to bookmark an event so that I can easily find it later.
+- As a user, I want to view my profile information so that I can check my information.
+- As a user, I want to view all the events of the conference so that I can choose which ones to attend.
+- As a user I want to be able to search for rooms and see them on the map, so that I can understand where they are located.
+- As a user I want t see my location inside the building so that I can understand where I am.
+- As a user, I want to have directions to a conference event so that I am able to attend the event.
 
 ### Domain model
 
