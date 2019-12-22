@@ -89,15 +89,14 @@ Django is a MVC python web framework built for perfectionists with deadlines, as
 #### Why Flutter?
 Flutter is a SDK for building apps for several different platforms, but it's mainly used for building mobile apps. Flutter helps in the development of mobile apps as it lets the same codebase be used to build both apps for Android and iOS, leading developers to only needing to learn Flutter instead of two different platform development kits (Android Studio and Xcode).
 
-### Physical architecture (to do, falar de beacons)
-The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
-
-It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
+### Physical architecture
+#### Bluetooth Low Energy beacons
+In terms of our physical architecture, our project requires the existence of Bluetooth Low Energy (BLE) beacons in the space we want to give directions at. These devices make it possible to properly localize a user anywhere at the conference, as long as they are properly distributed at the venue so that, at any given place, there are always 3 beacons distanced less than 100 meters from the user.
 
 ### Prototype
 Our application allows a user to get direction to any class a lecture/workshop is taking place by typing in the room in the search bar to compute the path.
 
-This means that we concluded almost every user story we planed to do. Unfortunately we had to choose to leave the ability to connect users with each other and diferenciate different types of users (speaker, attendee).
+This means that we concluded almost every user story we planned to do. Unfortunately we had to choose to leave the ability to connect users with each other and diferenciate different types of users (speaker, attendee).
 
 However all the other user stories were concluded with success.
 
